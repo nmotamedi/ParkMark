@@ -1,0 +1,98 @@
+body,
+h4,
+button {
+  background-color: #b7b7b7;
+  font-family: roboto, sans-serif;
+  font-weight: 100;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+}
+
+.hero-img-column {
+  flex-basis: 33%;
+}
+
+.hero-text-column {
+  flex-basis: 60%;
+  padding-right: 3rem;
+}
+
+.hero-button-row {
+  justify-content: center;
+}
+
+.title {
+  font-family: lekton, serif;
+  color: #597457;
+}
+
+.sub-title {
+  font-family: lekton, serif;
+}
+
+button {
+  background-color: #597457;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+
+i,
+.header-title {
+  color: #0005;
+  font-size: 2.5rem;
+}
+
+header {
+  background-color: #597457;
+}
+
+img {
+  width: 100%;
+  border-radius: 45px;
+}
+
+.hero.container {
+  margin-top: 2rem;
+}
+
+.hero-button {
+  margin: 0.5rem;
+}
+
+.column-half {
+  flex-basis: 50%;
+}
+
+.header-row-1 {
+  justify-content: flex-start;
+}
+
+.header-row-2 {
+  justify-content: flex-end;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.header-home-button,
+.header-title,
+.header-search,
+.header-visited-button,
+.header-wish-button {
+  margin: 1rem;
+}
+
+.header-row-2 i {
+  font-size: 1rem;
+  margin-left: 3rem;
+  margin-right: 3rem;
+}
