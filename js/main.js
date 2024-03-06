@@ -11,20 +11,27 @@ const $scrollMenuDiv = document.querySelector('.scrollmenu');
 const $heroButtonRow = document.querySelector('.hero-button-row');
 const $section = document.querySelector('section');
 const $mainListContainer = document.querySelector('.main-list-container');
+const $mainInfoContainer = document.querySelector('.main-park-info');
+const $infoParkName = document.querySelector('.col-park-name h1');
+const $infoParkState = document.querySelector('.col-park-name h3');
+const $infoParkDescription = document.querySelector('.main-park-info h5');
+const $infoActivities = document.querySelector('.activities tbody');
+const $infoPhoto = document.querySelector('.photo-info-row');
+const allNPParks = [];
 if (
   !$section ||
   !$mainListContainer ||
   !$scrollMenuDiv ||
   !$heroButtonRow ||
-  !$heroContainer
+  !$heroContainer ||
+  !$mainInfoContainer
 )
   throw new Error(
     '$scrollMenuDiv, $heroContainer, or $heroButtonRow query failed.',
   );
 async function getParksData(url) {
   try {
-    const allNPParks = [];
-    const resp = await fetch(url, { headers: headers });
+    const resp = await fetch(url, { headers });
     if (!resp.ok) throw new Error('Network failure');
     const parkJSON = await resp.json();
     const npParkData = parkJSON.data.filter((park) => {
@@ -44,11 +51,11 @@ async function getParksData(url) {
         imgAlt: park.images[0].altText,
         states: park.states,
         activities: parkActivities,
+        description: park.description,
       };
       allNPParks.push(parkObj);
     }
     displayList(allNPParks);
-    return allNPParks;
   } catch (e) {
     console.error(e);
   }
@@ -56,6 +63,7 @@ async function getParksData(url) {
 function createParkListItem(parkData) {
   const $divWrapper = document.createElement('div');
   $divWrapper.classList.add('row', 'list-item');
+  $divWrapper.setAttribute('data-park', parkData.fullName);
   const $imgColDiv = document.createElement('div');
   $imgColDiv.classList.add('column-third');
   const $listImg = document.createElement('img');
@@ -86,13 +94,36 @@ function displayList(parkData) {
     $scrollMenuDiv?.appendChild($listItem);
   }
 }
-const allParks = getParksData(parksEndpoint);
-console.log(allParks);
+getParksData(parksEndpoint);
+console.log(allNPParks);
 $heroButtonRow.addEventListener('click', (event) => {
   const eventTarget = event.target;
-  console.log(eventTarget);
   if (eventTarget.closest('div').dataset.view === 'main-list') {
     $heroContainer.classList.add('hidden');
     $section.classList.remove('hidden');
+    $mainListContainer.classList.remove('hidden');
   }
 });
+$scrollMenuDiv.addEventListener('click', (event) => {
+  const eventTarget = event.target;
+  const nearestDIV = eventTarget.closest('div.list-item');
+  const parkClicked = nearestDIV.dataset.park;
+  const parkInfo = allNPParks.find((park) => park.fullName === parkClicked);
+  populateInfo(parkInfo);
+  $mainListContainer.classList.add('hidden');
+  $mainInfoContainer.classList.remove('hidden');
+});
+function populateInfo(park) {
+  $infoParkName.textContent = park.fullName;
+  $infoParkState.textContent = park.states;
+  $infoParkDescription.textContent = park.description;
+  $infoActivities.textContent = '';
+  park.activities.forEach((activity) => {
+    const $tr = document.createElement('tr');
+    const $td = document.createElement('td');
+    $td.textContent = activity;
+    $tr.appendChild($td);
+    $infoActivities.appendChild($tr);
+  });
+  $infoPhoto.style.backgroundImage = `url(${park.imgURL})`;
+}

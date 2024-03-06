@@ -11,6 +11,7 @@ interface Park {
     name: string;
   }[];
   states: string;
+  description: string;
 }
 
 interface NationalPark {
@@ -19,6 +20,7 @@ interface NationalPark {
   imgAlt: string;
   activities: string[];
   states: string;
+  description: string;
 }
 
 const parksEndpoint = 'https://developer.nps.gov/api/v1/parks?limit=1000';
@@ -33,20 +35,27 @@ const $scrollMenuDiv = document.querySelector('.scrollmenu');
 const $heroButtonRow = document.querySelector('.hero-button-row');
 const $section = document.querySelector('section');
 const $mainListContainer = document.querySelector('.main-list-container');
+const $mainInfoContainer = document.querySelector('.main-park-info');
+const $infoParkName = document.querySelector('.col-park-name h1');
+const $infoParkState = document.querySelector('.col-park-name h3');
+const $infoParkDescription = document.querySelector('.main-park-info h5');
+const $infoActivities = document.querySelector('.activities tbody');
+const $infoPhoto = document.querySelector('.photo-info-row') as HTMLDivElement;
+const allNPParks: NationalPark[] = [];
 if (
   !$section ||
   !$mainListContainer ||
   !$scrollMenuDiv ||
   !$heroButtonRow ||
-  !$heroContainer
+  !$heroContainer ||
+  !$mainInfoContainer
 )
   throw new Error(
     '$scrollMenuDiv, $heroContainer, or $heroButtonRow query failed.',
   );
 
-async function getParksData(url: string): Promise<NationalPark[] | void> {
+async function getParksData(url: string): Promise<void> {
   try {
-    const allNPParks: NationalPark[] = [];
     const resp = await fetch(url, { headers });
     if (!resp.ok) throw new Error('Network failure');
     const parkJSON = await resp.json();
@@ -69,11 +78,11 @@ async function getParksData(url: string): Promise<NationalPark[] | void> {
         imgAlt: park.images[0].altText,
         states: park.states,
         activities: parkActivities,
+        description: park.description,
       };
       allNPParks.push(parkObj);
     }
     displayList(allNPParks);
-    return allNPParks;
   } catch (e) {
     console.error(e);
   }
@@ -82,6 +91,7 @@ async function getParksData(url: string): Promise<NationalPark[] | void> {
 function createParkListItem(parkData: NationalPark): HTMLDivElement {
   const $divWrapper = document.createElement('div');
   $divWrapper.classList.add('row', 'list-item');
+  $divWrapper.setAttribute('data-park', parkData.fullName);
   const $imgColDiv = document.createElement('div');
   $imgColDiv.classList.add('column-third');
   const $listImg = document.createElement('img');
@@ -114,14 +124,41 @@ function displayList(parkData: NationalPark[]): void {
   }
 }
 
-const allParks = getParksData(parksEndpoint);
-console.log(allParks);
+getParksData(parksEndpoint);
+console.log(allNPParks);
 
 $heroButtonRow.addEventListener('click', (event: Event) => {
   const eventTarget = event.target as HTMLElement;
-  console.log(eventTarget);
   if (eventTarget.closest('div')!.dataset.view === 'main-list') {
     $heroContainer.classList.add('hidden');
     $section.classList.remove('hidden');
+    $mainListContainer.classList.remove('hidden');
   }
 });
+
+$scrollMenuDiv.addEventListener('click', (event: Event) => {
+  const eventTarget = event.target as HTMLElement;
+  const nearestDIV = eventTarget.closest('div.list-item') as HTMLDivElement;
+  const parkClicked = nearestDIV.dataset.park;
+  const parkInfo = allNPParks.find(
+    (park: NationalPark) => park.fullName === parkClicked,
+  );
+  populateInfo(parkInfo!);
+  $mainListContainer.classList.add('hidden');
+  $mainInfoContainer.classList.remove('hidden');
+});
+
+function populateInfo(park: NationalPark): void {
+  $infoParkName!.textContent = park.fullName;
+  $infoParkState!.textContent = park.states;
+  $infoParkDescription!.textContent = park.description;
+  $infoActivities!.textContent = '';
+  park.activities.forEach((activity: string) => {
+    const $tr = document.createElement('tr');
+    const $td = document.createElement('td');
+    $td.textContent = activity;
+    $tr.appendChild($td);
+    $infoActivities!.appendChild($tr);
+  });
+  $infoPhoto.style.backgroundImage = `url(${park.imgURL})`;
+}

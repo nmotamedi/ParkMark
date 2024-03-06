@@ -123,3 +123,32 @@ div.scrollmenu {
 .list-item {
   border: 1px solid black;
 }
+
+.photo-info-row {
+  align-items: flex-end;
+  background-image: url('../images/NationalParks_forwiki.jpeg');
+  height: 450px;
+  background-size: 100%;
+  background-position: center;
+}
+
+.col-park-name,
+.col-buttons {
+  background-color: #e6e6e6a3;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f280;
+}
+
+.page-activities {
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+}
+
+.activities {
+  flex-basis: 30%;
+  display: flex;
+  flex-direction: column;
+}
