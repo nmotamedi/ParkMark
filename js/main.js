@@ -1,26 +1,4 @@
-interface Park {
-  fullName: string;
-  designation: string;
-  parkCode: string;
-  images: {
-    url: string;
-    altText: string;
-  }[];
-  activities: {
-    id: string;
-    name: string;
-  }[];
-  states: string;
-}
-
-interface NationalPark {
-  fullName: string;
-  imgURL: string;
-  imgAlt: string;
-  activities: string[];
-  states: string;
-}
-
+'use strict';
 const parksEndpoint = 'https://developer.nps.gov/api/v1/parks?limit=1000';
 // const eventsEndpoint = "https://developer.nps.gov/api/v1/events";
 // const activitiesEndpoint = "https://developer.nps.gov/api/v1/activities";
@@ -43,14 +21,13 @@ if (
   throw new Error(
     '$scrollMenuDiv, $heroContainer, or $heroButtonRow query failed.',
   );
-
-async function getParksData(url: string): Promise<NationalPark[] | void> {
+async function getParksData(url) {
   try {
-    const allNPParks: NationalPark[] = [];
-    const resp = await fetch(url, { headers });
+    const allNPParks = [];
+    const resp = await fetch(url, { headers: headers });
     if (!resp.ok) throw new Error('Network failure');
     const parkJSON = await resp.json();
-    const npParkData = parkJSON.data.filter((park: Park) => {
+    const npParkData = parkJSON.data.filter((park) => {
       return (
         park.designation === 'National Park' ||
         park.designation === 'National Park & Preserve' ||
@@ -60,10 +37,8 @@ async function getParksData(url: string): Promise<NationalPark[] | void> {
       );
     });
     for (const park of npParkData) {
-      const parkActivities: string[] = park.activities.map(
-        (activity: { id: string; name: string }) => activity.name,
-      );
-      const parkObj: NationalPark = {
+      const parkActivities = park.activities.map((activity) => activity.name);
+      const parkObj = {
         fullName: park.fullName,
         imgURL: park.images[0].url,
         imgAlt: park.images[0].altText,
@@ -78,8 +53,7 @@ async function getParksData(url: string): Promise<NationalPark[] | void> {
     console.error(e);
   }
 }
-
-function createParkListItem(parkData: NationalPark): HTMLDivElement {
+function createParkListItem(parkData) {
   const $divWrapper = document.createElement('div');
   $divWrapper.classList.add('row', 'list-item');
   const $imgColDiv = document.createElement('div');
@@ -106,21 +80,18 @@ function createParkListItem(parkData: NationalPark): HTMLDivElement {
   $divWrapper.appendChild($colDiv);
   return $divWrapper;
 }
-
-function displayList(parkData: NationalPark[]): void {
+function displayList(parkData) {
   for (const park of parkData) {
     const $listItem = createParkListItem(park);
     $scrollMenuDiv?.appendChild($listItem);
   }
 }
-
 const allParks = getParksData(parksEndpoint);
 console.log(allParks);
-
-$heroButtonRow.addEventListener('click', (event: Event) => {
-  const eventTarget = event.target as HTMLElement;
+$heroButtonRow.addEventListener('click', (event) => {
+  const eventTarget = event.target;
   console.log(eventTarget);
-  if (eventTarget.closest('div')!.dataset.view === 'main-list') {
+  if (eventTarget.closest('div').dataset.view === 'main-list') {
     $heroContainer.classList.add('hidden');
     $section.classList.remove('hidden');
   }

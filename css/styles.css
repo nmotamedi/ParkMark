@@ -17,6 +17,14 @@ button {
   flex-basis: 33%;
 }
 
+img {
+  width: 100%;
+}
+
+.hero-img-column > img {
+  border-radius: 0 45px 45px 0;
+}
+
 .hero-text-column {
   flex-basis: 60%;
   padding-right: 3rem;
@@ -53,13 +61,9 @@ header {
   background-color: #597457;
 }
 
-img {
-  width: 100%;
-  border-radius: 45px;
-}
-
 .hero.container {
   margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .hero-button {
@@ -95,4 +99,27 @@ img {
   font-size: 1rem;
   margin-left: 3rem;
   margin-right: 3rem;
+}
+
+.map-column {
+  flex-basis: 55%;
+}
+
+.list-col {
+  flex-basis: 40%;
+}
+
+div.scrollmenu {
+  background-color: #bfbab1;
+  overflow: scroll;
+  white-space: nowrap;
+  height: 1000px;
+}
+
+.column-third {
+  flex-basis: 33%;
+}
+
+.list-item {
+  border: 1px solid black;
 }
