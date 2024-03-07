@@ -16,6 +16,8 @@ const $infoParkName = document.querySelector('.col-park-name h1');
 const $infoParkState = document.querySelector('.col-park-name h3');
 const $infoParkDescription = document.querySelector('.main-park-info h5');
 const $infoActivities = document.querySelector('.activities tbody');
+const $headerHomeButton1 = document.querySelector('.header-home-button');
+const $headerHomeButton2 = document.querySelector('.header-title');
 const $infoPhoto = document.querySelector('.photo-info-row');
 const allNPParks = [];
 if (
@@ -24,7 +26,9 @@ if (
   !$scrollMenuDiv ||
   !$heroButtonRow ||
   !$heroContainer ||
-  !$mainInfoContainer
+  !$mainInfoContainer ||
+  !$headerHomeButton1 ||
+  !$headerHomeButton2
 )
   throw new Error(
     '$scrollMenuDiv, $heroContainer, or $heroButtonRow query failed.',
@@ -127,3 +131,11 @@ function populateInfo(park) {
   });
   $infoPhoto.style.backgroundImage = `url(${park.imgURL})`;
 }
+$headerHomeButton1.addEventListener('click', () => {
+  $mainListContainer.classList.remove('hidden');
+  $mainInfoContainer.classList.add('hidden');
+});
+$headerHomeButton2.addEventListener('click', () => {
+  $mainListContainer.classList.remove('hidden');
+  $mainInfoContainer.classList.add('hidden');
+});

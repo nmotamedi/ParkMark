@@ -51,6 +51,10 @@ button {
   padding: 0.5rem;
 }
 
+button:hover {
+  cursor: pointer;
+}
+
 i,
 .header-title {
   color: #0005;
@@ -59,6 +63,8 @@ i,
 
 header {
   background-color: #597457;
+  position: sticky;
+  top: 0;
 }
 
 .hero.container {
@@ -109,11 +115,15 @@ header {
   flex-basis: 40%;
 }
 
+.scrollmenu:hover {
+  cursor: pointer;
+}
+
 div.scrollmenu {
   background-color: #bfbab1;
   overflow: scroll;
   white-space: nowrap;
-  height: 1000px;
+  height: 800px;
 }
 
 .column-third {
@@ -122,12 +132,18 @@ div.scrollmenu {
 
 .list-item {
   border: 1px solid black;
+  overflow: hidden;
+  height: 150px;
+}
+
+.list-item img {
+  width: 200px;
 }
 
 .photo-info-row {
   align-items: flex-end;
   background-image: url('../images/NationalParks_forwiki.jpeg');
-  height: 450px;
+  height: 500px;
   background-size: 100%;
   background-position: center;
 }
@@ -151,4 +167,21 @@ tr:nth-child(even) {
   flex-basis: 30%;
   display: flex;
   flex-direction: column;
+}
+
+.scrollmenu .row {
+  align-items: flex-start;
+}
+
+.scrollmenu .row h5 {
+  margin: 0;
+}
+
+.list-item:nth-child(0) {
+  align-self: center;
+}
+
+.header-home-button:hover,
+.header-title:hover {
+  cursor: pointer;
 }
