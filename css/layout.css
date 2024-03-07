@@ -1,3 +1,29 @@
 .hidden {
   display: none;
 }
+
+@media only screen and (max-width: 575px) {
+  .column-half {
+    flex-basis: 100%;
+  }
+
+  .hero-img-column {
+    flex-basis: 100%;
+  }
+
+  .hero-text-column {
+    flex-basis: 100%;
+  }
+
+  .map-column {
+    flex-basis: 100%;
+  }
+
+  .list-col {
+    flex-basis: 100%;
+  }
+
+  .activities {
+    flex-basis: 100%;
+  }
+}

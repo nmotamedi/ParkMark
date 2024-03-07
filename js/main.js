@@ -1,8 +1,5 @@
 'use strict';
 const parksEndpoint = 'https://developer.nps.gov/api/v1/parks?limit=1000';
-// const eventsEndpoint = "https://developer.nps.gov/api/v1/events";
-// const activitiesEndpoint = "https://developer.nps.gov/api/v1/activities";
-// const ttdEndpoint = "https://developer.nps.gov/api/v1/thingstodo";
 const headers = {
   'X-Api-Key': 'etA2FldfC7HhYmqU7qvOsi5HIeCezAaSefRG26Hk',
 };
@@ -99,7 +96,6 @@ function displayList(parkData) {
   }
 }
 getParksData(parksEndpoint);
-console.log(allNPParks);
 $heroButtonRow.addEventListener('click', (event) => {
   const eventTarget = event.target;
   if (eventTarget.closest('div').dataset.view === 'main-list') {

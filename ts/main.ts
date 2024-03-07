@@ -24,9 +24,6 @@ interface NationalPark {
 }
 
 const parksEndpoint = 'https://developer.nps.gov/api/v1/parks?limit=1000';
-// const eventsEndpoint = "https://developer.nps.gov/api/v1/events";
-// const activitiesEndpoint = "https://developer.nps.gov/api/v1/activities";
-// const ttdEndpoint = "https://developer.nps.gov/api/v1/thingstodo";
 const headers = {
   'X-Api-Key': 'etA2FldfC7HhYmqU7qvOsi5HIeCezAaSefRG26Hk',
 };
@@ -129,7 +126,6 @@ function displayList(parkData: NationalPark[]): void {
 }
 
 getParksData(parksEndpoint);
-console.log(allNPParks);
 
 $heroButtonRow.addEventListener('click', (event: Event) => {
   const eventTarget = event.target as HTMLElement;

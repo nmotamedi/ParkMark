@@ -1,13 +1,55 @@
-body,
-h4,
-button {
+body {
   background-color: #b7b7b7;
+}
+
+h4,
+h1,
+h2,
+h3,
+h5,
+h6,
+td,
+button {
   font-family: roboto, sans-serif;
   font-weight: 100;
+  margin: 0;
+}
+
+button {
+  background-color: #597457;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+
+.hero-text-column h1 {
+  font-size: 5rem;
+  padding-bottom: 2rem;
+}
+
+.hero-text-column h2 {
+  font-size: 3.125rem;
+  padding-bottom: 3rem;
+}
+
+.hero-text-column h4 {
+  font-size: 1.875rem;
+  padding-bottom: 2rem;
+}
+
+.hero-button > button {
+  font-size: 1.21rem;
+}
+
+.main-list-container h1 {
+  font-size: 3.54rem;
+  padding-bottom: 3rem;
 }
 
 .row {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   text-align: left;
@@ -41,14 +83,6 @@ img {
 
 .sub-title {
   font-family: lekton, serif;
-}
-
-button {
-  background-color: #597457;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 0.5rem;
 }
 
 button:hover {
@@ -113,6 +147,7 @@ header {
 
 .list-col {
   flex-basis: 40%;
+  margin: 2rem;
 }
 
 .scrollmenu:hover {
@@ -127,17 +162,27 @@ div.scrollmenu {
 }
 
 .column-third {
-  flex-basis: 33%;
+  flex-basis: content;
+  padding: 1rem;
 }
 
 .list-item {
   border: 1px solid black;
   overflow: hidden;
-  height: 150px;
+  height: 100px;
+  justify-content: flex-start;
 }
 
 .list-item img {
-  width: 200px;
+  width: 100px;
+}
+
+.list-item h3 {
+  font-size: 1.5rem;
+}
+
+.list-item h5 {
+  font-size: 1 rem;
 }
 
 .photo-info-row {
@@ -151,6 +196,19 @@ div.scrollmenu {
 .col-park-name,
 .col-buttons {
   background-color: #e6e6e6a3;
+  padding: 1rem;
+}
+
+.col-park-name {
+  border-radius: 0 6px 0 0;
+}
+
+.col-buttons {
+  border-radius: 6px 0 0;
+}
+
+.col-buttons button {
+  margin: 0.5rem;
 }
 
 tr:nth-child(even) {
@@ -159,8 +217,14 @@ tr:nth-child(even) {
 
 .page-activities {
   justify-content: space-around;
-  align-items: center;
+  align-items: flex-start;
   text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.page-activities h3 {
+  font-size: 2.81rem;
 }
 
 .activities {
@@ -169,8 +233,9 @@ tr:nth-child(even) {
   flex-direction: column;
 }
 
-.scrollmenu .row {
-  align-items: flex-start;
+.main-park-info h5 {
+  font-size: 1.875rem;
+  margin-top: 1rem;
 }
 
 .scrollmenu .row h5 {
@@ -184,4 +249,30 @@ tr:nth-child(even) {
 .header-home-button:hover,
 .header-title:hover {
   cursor: pointer;
+}
+
+.main-list-container > .row {
+  justify-content: space-around;
+}
+
+.map-column img {
+  width: 80%;
+}
+
+.col-park-name > h1 {
+  font-size: 3.53rem;
+}
+
+.col-park-name > h3 {
+  font-size: 2.81rem;
+}
+
+td {
+  font-size: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.column-full {
+  flex-basis: 100%;
 }
