@@ -1,0 +1,283 @@
+body {
+  background-color: #b7b7b7;
+}
+
+h4,
+h1,
+h2,
+h3,
+h5,
+h6,
+td,
+button {
+  font-family: roboto, sans-serif;
+  font-weight: 100;
+  margin: 0;
+}
+
+button {
+  background-color: #597457;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+
+.hero-text-column h1 {
+  font-size: 5rem;
+  padding-bottom: 2rem;
+}
+
+.hero-text-column h2 {
+  font-size: 3.125rem;
+  padding-bottom: 3rem;
+}
+
+.hero-text-column h4 {
+  font-size: 1.875rem;
+  padding-bottom: 2rem;
+}
+
+.hero-button > button {
+  font-size: 1.21rem;
+}
+
+.main-list-container h1 {
+  font-size: 3.54rem;
+  padding-bottom: 3rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+}
+
+.hero-img-column {
+  flex-basis: 33%;
+}
+
+img {
+  width: 100%;
+}
+
+.hero-img-column > img {
+  border-radius: 0 45px 45px 0;
+}
+
+.hero-text-column {
+  flex-basis: 60%;
+  padding-right: 3rem;
+}
+
+.hero-button-row {
+  justify-content: center;
+}
+
+.title {
+  font-family: lekton, serif;
+  color: #597457;
+}
+
+.sub-title {
+  font-family: lekton, serif;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+i,
+.header-title {
+  color: #0005;
+  font-size: 2.5rem;
+}
+
+header {
+  background-color: #597457;
+  position: sticky;
+  top: 0;
+}
+
+.hero.container {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.hero-button {
+  margin: 0.5rem;
+}
+
+.column-half {
+  flex-basis: 50%;
+}
+
+.header-row-1 {
+  justify-content: flex-start;
+}
+
+.header-row-2 {
+  justify-content: flex-end;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.header-home-button,
+.header-title,
+.header-search,
+.header-visited-button,
+.header-wish-button {
+  margin: 1rem;
+}
+
+.header-row-2 i {
+  font-size: 1rem;
+  margin-left: 3rem;
+  margin-right: 3rem;
+}
+
+.map-column {
+  flex-basis: 55%;
+  padding: 3rem;
+}
+
+.list-col {
+  flex-basis: 40%;
+  margin: 2rem;
+}
+
+.scrollmenu:hover {
+  cursor: pointer;
+}
+
+div.scrollmenu {
+  background-color: #bfbab1;
+  overflow: scroll;
+  white-space: nowrap;
+  height: 800px;
+}
+
+.column-third {
+  flex-basis: content;
+  padding: 1rem;
+}
+
+.list-item {
+  border: 1px solid black;
+  overflow: hidden;
+  height: 100px;
+  justify-content: flex-start;
+}
+
+.list-item img {
+  width: 100px;
+}
+
+.list-item h3 {
+  font-size: 1.5rem;
+}
+
+.list-item h5 {
+  font-size: 1 rem;
+}
+
+.photo-info-row {
+  align-items: flex-end;
+  background-image: url('../images/NationalParks_forwiki.jpeg');
+  height: 500px;
+  background-size: 100%;
+  background-position: center;
+}
+
+.col-park-name,
+.col-buttons {
+  background-color: #e6e6e6a3;
+  padding: 1rem;
+}
+
+.col-park-name {
+  border-radius: 0 6px 0 0;
+}
+
+.col-buttons {
+  border-radius: 6px 0 0;
+}
+
+.col-buttons button {
+  margin: 0.5rem;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f280;
+}
+
+.page-activities {
+  justify-content: space-around;
+  align-items: flex-start;
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.page-activities h3 {
+  font-size: 2.81rem;
+}
+
+.activities {
+  flex-basis: 30%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 5rem;
+}
+
+.main-park-info h5 {
+  font-size: 1.875rem;
+  margin-top: 1rem;
+}
+
+.scrollmenu .row h5 {
+  margin: 0;
+}
+
+.list-item:nth-child(0) {
+  align-self: center;
+}
+
+.header-home-button:hover,
+.header-title:hover {
+  cursor: pointer;
+}
+
+.main-list-container > .row {
+  justify-content: space-around;
+}
+
+.map-column img {
+  width: 80%;
+}
+
+.col-park-name > h1 {
+  font-size: 3.53rem;
+}
+
+.col-park-name > h3 {
+  font-size: 2.81rem;
+}
+
+td {
+  font-size: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.column-full {
+  flex-basis: 100%;
+}
+
+.list-text-col {
+  align-self: flex-start;
+}
