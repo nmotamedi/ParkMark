@@ -1,32 +1,3 @@
-interface Park {
-  name: string;
-  designation: string;
-  parkCode: string;
-  images: {
-    url: string;
-    altText: string;
-  }[];
-  activities: {
-    id: string;
-    name: string;
-  }[];
-  states: string;
-  description: string;
-}
-
-interface NationalPark {
-  fullName: string;
-  imgURL: string;
-  imgAlt: string;
-  activities: string[];
-  states: string;
-  description: string;
-}
-
-const parksEndpoint = 'https://developer.nps.gov/api/v1/parks?limit=1000';
-const headers = {
-  'X-Api-Key': 'etA2FldfC7HhYmqU7qvOsi5HIeCezAaSefRG26Hk',
-};
 const $heroContainer = document.querySelector('.hero.container');
 const $scrollMenuDiv = document.querySelector('.scrollmenu');
 const $heroButtonRow = document.querySelector('.hero-button-row');
@@ -36,11 +7,11 @@ const $mainInfoContainer = document.querySelector('.main-park-info');
 const $infoParkName = document.querySelector('.col-park-name h1');
 const $infoParkState = document.querySelector('.col-park-name h3');
 const $infoParkDescription = document.querySelector('.main-park-info h5');
-const $infoActivities = document.querySelector('.activities tbody');
+const $infoActivities = document.querySelector('.activities-list tbody');
+// const $infoEvents = document.querySelector(".events-list tbody");
 const $headerHomeButton1 = document.querySelector('.header-home-button');
 const $headerHomeButton2 = document.querySelector('.header-title');
 const $infoPhoto = document.querySelector('.photo-info-row') as HTMLDivElement;
-const allNPParks: NationalPark[] = [];
 if (
   !$section ||
   !$mainListContainer ||
@@ -54,40 +25,6 @@ if (
   throw new Error(
     '$scrollMenuDiv, $heroContainer, or $heroButtonRow query failed.',
   );
-
-async function getParksData(url: string): Promise<void> {
-  try {
-    const resp = await fetch(url, { headers });
-    if (!resp.ok) throw new Error('Network failure');
-    const parkJSON = await resp.json();
-    const npParkData = parkJSON.data.filter((park: Park) => {
-      return (
-        park.designation === 'National Park' ||
-        park.designation === 'National Park & Preserve' ||
-        park.designation === 'National Parks' ||
-        park.designation === 'National and State Parks' ||
-        park.parkCode === 'npsa'
-      );
-    });
-    for (const park of npParkData) {
-      const parkActivities: string[] = park.activities.map(
-        (activity: { id: string; name: string }) => activity.name,
-      );
-      const parkObj: NationalPark = {
-        fullName: park.name,
-        imgURL: park.images[0].url,
-        imgAlt: park.images[0].altText,
-        states: park.states,
-        activities: parkActivities,
-        description: park.description,
-      };
-      allNPParks.push(parkObj);
-    }
-    displayList(allNPParks);
-  } catch (e) {
-    console.error(e);
-  }
-}
 
 function createParkListItem(parkData: NationalPark): HTMLDivElement {
   const $divWrapper = document.createElement('div');
@@ -120,17 +57,17 @@ function createParkListItem(parkData: NationalPark): HTMLDivElement {
 }
 
 function displayList(parkData: NationalPark[]): void {
+  $scrollMenuDiv!.textContent = '.';
   for (const park of parkData) {
     const $listItem = createParkListItem(park);
     $scrollMenuDiv?.appendChild($listItem);
   }
 }
 
-getParksData(parksEndpoint);
-
 $heroButtonRow.addEventListener('click', (event: Event) => {
   const eventTarget = event.target as HTMLElement;
   if (eventTarget.closest('div')!.dataset.view === 'main-list') {
+    displayList(data.parks);
     $heroContainer.classList.add('hidden');
     $section.classList.remove('hidden');
     $mainListContainer.classList.remove('hidden');
@@ -141,7 +78,7 @@ $scrollMenuDiv.addEventListener('click', (event: Event) => {
   const eventTarget = event.target as HTMLElement;
   const nearestDIV = eventTarget.closest('div.list-item') as HTMLDivElement;
   const parkClicked = nearestDIV.dataset.park;
-  const parkInfo = allNPParks.find(
+  const parkInfo = data.parks.find(
     (park: NationalPark) => park.fullName === parkClicked,
   );
   populateInfo(parkInfo!);
@@ -165,11 +102,13 @@ function populateInfo(park: NationalPark): void {
 }
 
 $headerHomeButton1.addEventListener('click', () => {
+  displayList(data.parks);
   $mainListContainer.classList.remove('hidden');
   $mainInfoContainer.classList.add('hidden');
 });
 
 $headerHomeButton2.addEventListener('click', () => {
+  displayList(data.parks);
   $mainListContainer.classList.remove('hidden');
   $mainInfoContainer.classList.add('hidden');
 });
