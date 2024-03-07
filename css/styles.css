@@ -142,6 +142,7 @@ header {
 
 .map-column {
   flex-basis: 55%;
+  padding: 3rem;
 }
 
 .list-col {
@@ -230,6 +231,7 @@ tr:nth-child(even) {
   flex-basis: 30%;
   display: flex;
   flex-direction: column;
+  margin-top: 5rem;
 }
 
 .main-park-info h5 {
@@ -274,4 +276,8 @@ td {
 
 .column-full {
   flex-basis: 100%;
+}
+
+.list-text-col {
+  align-self: flex-start;
 }

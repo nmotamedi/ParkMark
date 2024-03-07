@@ -1,5 +1,5 @@
 interface Park {
-  fullName: string;
+  name: string;
   designation: string;
   parkCode: string;
   images: {
@@ -74,7 +74,7 @@ async function getParksData(url: string): Promise<void> {
         (activity: { id: string; name: string }) => activity.name,
       );
       const parkObj: NationalPark = {
-        fullName: park.fullName,
+        fullName: park.name,
         imgURL: park.images[0].url,
         imgAlt: park.images[0].altText,
         states: park.states,
@@ -98,7 +98,8 @@ function createParkListItem(parkData: NationalPark): HTMLDivElement {
   const $listImg = document.createElement('img');
   $listImg.setAttribute('src', parkData.imgURL);
   $listImg.setAttribute('alt', parkData.imgAlt);
-  const $textColDiv = $imgColDiv.cloneNode(true);
+  const $textColDiv = $imgColDiv.cloneNode(true) as HTMLDivElement;
+  $textColDiv.classList.add('list-text-col');
   const $nameRowDiv = document.createElement('div');
   $nameRowDiv.classList.add('row');
   const $nameH3 = document.createElement('h3');

@@ -47,7 +47,7 @@ async function getParksData(url) {
     for (const park of npParkData) {
       const parkActivities = park.activities.map((activity) => activity.name);
       const parkObj = {
-        fullName: park.fullName,
+        fullName: park.name,
         imgURL: park.images[0].url,
         imgAlt: park.images[0].altText,
         states: park.states,
@@ -71,6 +71,7 @@ function createParkListItem(parkData) {
   $listImg.setAttribute('src', parkData.imgURL);
   $listImg.setAttribute('alt', parkData.imgAlt);
   const $textColDiv = $imgColDiv.cloneNode(true);
+  $textColDiv.classList.add('list-text-col');
   const $nameRowDiv = document.createElement('div');
   $nameRowDiv.classList.add('row');
   const $nameH3 = document.createElement('h3');
