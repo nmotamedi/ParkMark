@@ -7,9 +7,9 @@ interface NationalPark {
   states: string;
   description: string;
   status?: string;
-  activitiesDone?: string;
-  activitiesToDo?: string;
-  eventsToDo?: string;
+  activitiesDone?: string[];
+  activitiesToDo?: string[];
+  eventsToDo?: string[];
   datesVisitedStart?: string;
   datesVisitedEnd?: string;
   datesToVisitStart?: string;

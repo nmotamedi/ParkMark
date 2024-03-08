@@ -1,4 +1,5 @@
 'use strict';
+const earthRadiusM = 6378137;
 const $heroContainer = document.querySelector('.hero.container');
 const $scrollMenuDiv = document.querySelector('.scrollmenu');
 const $heroButtonRow = document.querySelector('.hero-button-row');
@@ -11,6 +12,7 @@ const $mainInfoContainer = document.querySelector('.main-park-info');
 const $infoParkName = document.querySelector('.col-park-name h1');
 const $infoParkState = document.querySelector('.col-park-name h3');
 const $infoParkDescription = document.querySelector('.main-park-info h5');
+const $activityTitle = document.querySelector('.info .activities-list > h3');
 const $infoActivities = document.querySelector('.activities-list tbody');
 const $infoButtons = document.querySelector('.col-buttons');
 // const $infoEvents = document.querySelector(".events-list tbody");
@@ -18,6 +20,11 @@ const $headerHomeButton1 = document.querySelector('.header-home-button');
 const $headerHomeButton2 = document.querySelector('.header-title');
 const $infoPhoto = document.querySelector('.photo-info-row');
 const $form = document.querySelector('#submission-form');
+const $iframe = document.querySelector('.activities iframe');
+// const $dateToVisitCol = document.querySelector(".wishlist-dates");
+// const $dateToVisit = document.querySelector(".wishlist-dates h5");
+const $dateVisitedCol = document.querySelector('.visited-dates');
+const $dateVisited = document.querySelector('.visited-dates h5');
 let currentPark;
 let currentIndex;
 let currentStatus;
@@ -55,6 +62,13 @@ function createParkListItem(parkData) {
   const $stateRowDiv = $nameRowDiv.cloneNode(true);
   const $colDiv = $imgColDiv.cloneNode(true);
   const $stateH5 = document.createElement('h5');
+  const $icon = document.createElement('i');
+  if (parkData.status === 'visited') {
+    $icon.classList.add('fa-solid', 'fa-book-open');
+  } else if (parkData.status === 'wishlist') {
+    $icon.classList.add('fa-solid', 'fa-pencil');
+  }
+  $colDiv.appendChild($icon);
   $stateH5.textContent = parkData.states;
   $stateRowDiv.appendChild($stateH5);
   $nameRowDiv.appendChild($nameH3);
@@ -97,16 +111,38 @@ $scrollMenuDiv.addEventListener('click', (event) => {
 function populateInfo(park) {
   $infoParkName.textContent = park.fullName;
   $infoParkState.textContent = park.states;
+  $activityTitle.textContent = 'Activities';
   $infoParkDescription.textContent = park.description;
   $infoActivities.textContent = '';
-  park.activities.forEach((activity) => {
-    const $tr = document.createElement('tr');
-    const $td = document.createElement('td');
-    $td.textContent = activity;
-    $tr.appendChild($td);
-    $infoActivities.appendChild($tr);
-  });
+  const x = longToX(park.longitude);
+  const y = latToY(park.latitude);
+  const URL = `https://hikingproject.com/widget/map?favs=1&amp;location=fixed&amp;x=${x}&amp;y=${y}&amp;z=9.4&amp;h=500`;
+  $iframe?.setAttribute('src', URL);
   $infoPhoto.style.backgroundImage = `url(${park.imgURL})`;
+  if (!park.status) {
+    park.activities.forEach((activity) => {
+      $infoButtons?.classList.remove('hidden');
+      $dateVisitedCol?.classList.add('hidden');
+      const $tr = document.createElement('tr');
+      const $td = document.createElement('td');
+      $td.textContent = activity;
+      $tr.appendChild($td);
+      $infoActivities.appendChild($tr);
+    });
+  } else if (park.status === 'visited') {
+    $dateVisited.textContent = `${park.datesVisitedStart} - ${park.datesVisitedEnd}`;
+    console.log($activityTitle);
+    $activityTitle.textContent = 'Activities Done';
+    park.activitiesDone.forEach((activity) => {
+      const $tr = document.createElement('tr');
+      const $td = document.createElement('td');
+      $td.textContent = activity;
+      $tr.appendChild($td);
+      $infoActivities.appendChild($tr);
+    });
+    $infoButtons?.classList.add('hidden');
+    $dateVisitedCol?.classList.remove('hidden');
+  }
 }
 $headerHomeButton1.addEventListener('click', () => {
   displayList(data.parks);
@@ -121,7 +157,6 @@ $headerHomeButton2.addEventListener('click', () => {
 $infoButtons.addEventListener('click', (event) => {
   const eventTarget = event.target;
   const buttonText = eventTarget.closest('button')?.textContent?.trim();
-  console.log(buttonText);
   if (buttonText === 'Add to Journal') {
     currentStatus = 'visited';
     $infoButtons.classList.add('hidden');
@@ -139,7 +174,6 @@ $form?.addEventListener('submit', (event) => {
   event.preventDefault();
   const eventTarget = event.target;
   const $formElements = eventTarget.elements;
-  console.log($formElements);
   data.parks[currentIndex].status = currentStatus;
   if (currentStatus === 'visited') {
     if (data.parks[currentIndex].fullName === 'Sequoia & Kings Canyon') {
@@ -150,18 +184,44 @@ $form?.addEventListener('submit', (event) => {
     data.parks[currentIndex].datesVisitedStart = $formElements.tripStart.value;
     data.parks[currentIndex].datesVisitedEnd = $formElements.tripEnd.value;
     if ($formElements.activities?.value) {
-      console.log($formElements.activities);
-      data.parks[currentIndex].activitiesDone = $formElements.activities.value;
+      const optionsArray = $formElements.activities.selectedOptions;
+      data.parks[currentIndex].activitiesDone = [];
+      for (const option of optionsArray) {
+        data.parks[currentIndex].activitiesDone.push(option.textContent);
+      }
     }
   } else if (currentStatus === 'wishlist') {
     data.parks[currentIndex].datesToVisitStart = $formElements.tripStart.value;
     data.parks[currentIndex].datesToVisitEnd = $formElements.tripEnd.value;
     if ($formElements.activities?.value) {
-      data.parks[currentIndex].activitiesToDo = $formElements.activities.value;
+      const optionsArray = $formElements.activities.selectedOptions;
+      data.parks[currentIndex].activitiesToDo = [];
+      for (const option of optionsArray) {
+        data.parks[currentIndex].activitiesToDo.push(option.textContent);
+      }
     }
     if ($formElements.events?.value) {
-      data.parks[currentIndex].eventsToDo = $formElements.events.value;
+      const optionsArray = $formElements.events.selectedOptions;
+      data.parks[currentIndex].eventsToDo = [];
+      for (const option of optionsArray) {
+        data.parks[currentIndex].eventsToDo.push(option.textContent);
+      }
     }
   }
+  $mainListContainer.classList.add('hidden');
+  $mainInfoContainer.classList.remove('hidden');
+  $infoButtons.classList.remove('hidden');
+  $sectionInfo.classList.remove('hidden');
+  $sectionForm.classList.add('hidden');
+  currentIndex = 1000;
+  currentStatus = undefined;
+  currentPark = undefined;
   $form.reset();
 });
+function longToX(longitude) {
+  return earthRadiusM * ((longitude * Math.PI) / 180);
+}
+function latToY(latitude) {
+  const latRad = (latitude * Math.PI) / 180;
+  return earthRadiusM * Math.log(Math.tan(Math.PI / 4 + latRad / 2));
+}
