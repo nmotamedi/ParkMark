@@ -26,11 +26,15 @@ const $headerHomeButton1 = document.querySelector('.header-home-button');
 const $headerHomeButton2 = document.querySelector('.header-title');
 const $infoPhoto = document.querySelector('.photo-info-row') as HTMLDivElement;
 const $form = document.querySelector('#submission-form') as HTMLFormElement;
-const $iframe = document.querySelector('.activities iframe');
+const $iframes = document.querySelectorAll(
+  '.activities iframe',
+) as NodeListOf<HTMLIFrameElement>;
 const $dateVisitedCol = document.querySelector('.visited-dates');
 const $dateVisited = document.querySelector('.visited-dates h5');
 const $visitedHeaderButton = document.querySelector('.header-visited-button');
 const $countH2 = document.querySelector('.list-title-row h2');
+const $dateStartInput = document.querySelector('#start');
+const $dateEndInput = document.querySelector('#end');
 
 let currentPark: NationalPark | undefined;
 let currentIndex: number;
@@ -161,7 +165,9 @@ function populateInfo(park: NationalPark): void {
   const x = longToX(park.longitude);
   const y = latToY(park.latitude);
   const URL = `https://hikingproject.com/widget/map?favs=1&amp;location=fixed&amp;x=${x}&amp;y=${y}&amp;z=9.4&amp;h=500`;
-  $iframe?.setAttribute('src', URL);
+  $iframes?.forEach(($iframe: HTMLIFrameElement) => {
+    $iframe.setAttribute('src', URL);
+  });
   $infoPhoto.style.backgroundImage = `url(${park.imgURL})`;
   if (!park.status) {
     park.activities.forEach((activity: string) => {
@@ -270,4 +276,11 @@ function latToY(latitude: number): number {
 
 $visitedHeaderButton?.addEventListener('click', () => {
   viewSwap('journal-list');
+});
+
+$dateStartInput?.addEventListener('input', (event: Event) => {
+  const eventTarget = event.target as HTMLInputElement;
+  const startDate = eventTarget.value;
+  $dateEndInput?.setAttribute('min', startDate);
+  $dateEndInput?.setAttribute('value', startDate);
 });
