@@ -57,7 +57,7 @@
 
   div.activities {
     flex-basis: 100%;
-    margin-top: 5rem;
+    margin-top: 2rem;
   }
 
   div.map-image {
@@ -76,7 +76,15 @@
     font-size: 1.5rem;
   }
 
+  .row.list-title-row h1 {
+    font-size: 3rem;
+  }
+
   .row.photo-info-row h1 {
     font-size: 2rem;
+  }
+
+  .list-item.row {
+    flex-wrap: nowrap;
   }
 }

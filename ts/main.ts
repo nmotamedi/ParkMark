@@ -22,14 +22,11 @@ const $activityTitle = document.querySelector('.info .activities-list > h3');
 const $listViewTitle = document.querySelector('.map-column h1');
 const $infoActivities = document.querySelector('.activities-list tbody');
 const $infoButtons = document.querySelector('.col-buttons');
-// const $infoEvents = document.querySelector(".events-list tbody");
 const $headerHomeButton1 = document.querySelector('.header-home-button');
 const $headerHomeButton2 = document.querySelector('.header-title');
 const $infoPhoto = document.querySelector('.photo-info-row') as HTMLDivElement;
 const $form = document.querySelector('#submission-form') as HTMLFormElement;
 const $iframe = document.querySelector('.activities iframe');
-// const $dateToVisitCol = document.querySelector(".wishlist-dates");
-// const $dateToVisit = document.querySelector(".wishlist-dates h5");
 const $dateVisitedCol = document.querySelector('.visited-dates');
 const $dateVisited = document.querySelector('.visited-dates h5');
 const $visitedHeaderButton = document.querySelector('.header-visited-button');
@@ -56,7 +53,7 @@ if (
   !$infoButtons
 )
   throw new Error(
-    '$scrollMenuDiv, $heroContainer, or $heroButtonRow query failed.',
+    '$sectionMain, $sectionForm, $sectionInfo, $mainListContainer, $scrollMenuDiv, $heroContainer, $heroButtonRow, $mainInfoContainer, $headerHomeButtons, $infoButtons query failed.',
   );
 
 function createParkListItem(parkData: NationalPark): HTMLDivElement {
@@ -107,17 +104,41 @@ function displayList(parkData: NationalPark[]): void {
 $heroButtonRow.addEventListener('click', (event: Event) => {
   const eventTarget = event.target as HTMLElement;
   if (eventTarget.closest('div')!.dataset.view === 'main-list') {
-    displayList(data.parks);
+    viewSwap('main-list');
   } else if (eventTarget.closest('div')!.dataset.view === 'journal-list') {
-    $listViewTitle!.textContent = 'Park Journal';
-    $countH2!.textContent = `${data.parkCount}/63`;
-    $countH2!.classList.remove('hidden');
-    displayList(visitedParks);
+    viewSwap('journal-list');
   }
-  $heroContainer.classList.add('hidden');
-  $sectionMain.classList.remove('hidden');
-  $mainListContainer.classList.remove('hidden');
 });
+
+function viewSwap(view: string): void {
+  $form.reset();
+  if (view === 'main-list' || view === 'journal-list') {
+    $heroContainer?.classList.add('hidden');
+    $sectionMain?.classList.remove('hidden');
+    $mainListContainer?.classList.remove('hidden');
+    $mainInfoContainer?.classList.add('hidden');
+    $sectionInfo?.classList.remove('hidden');
+    $sectionForm?.classList.add('hidden');
+    $infoButtons?.classList.remove('hidden');
+    if (view === 'main-list') {
+      $listViewTitle!.textContent = 'All National Parks';
+      displayList(data.parks);
+      $countH2!.classList.add('hidden');
+    } else if (view === 'journal-list') {
+      displayList(visitedParks);
+      $listViewTitle!.textContent = 'My Park Journal';
+      $countH2!.textContent = `${data.parkCount}/63`;
+      $countH2!.classList.remove('hidden');
+    }
+  } else if (view === 'info') {
+    $mainListContainer?.classList.add('hidden');
+    $mainInfoContainer?.classList.remove('hidden');
+  } else if (view === 'visit-form') {
+    $infoButtons?.classList.add('hidden');
+    $sectionInfo?.classList.add('hidden');
+    $sectionForm?.classList.remove('hidden');
+  }
+}
 
 $scrollMenuDiv.addEventListener('click', (event: Event) => {
   const eventTarget = event.target as HTMLElement;
@@ -128,8 +149,7 @@ $scrollMenuDiv.addEventListener('click', (event: Event) => {
     return park.fullName === parkClicked;
   });
   populateInfo(currentPark!);
-  $mainListContainer.classList.add('hidden');
-  $mainInfoContainer.classList.remove('hidden');
+  viewSwap('info');
 });
 
 function populateInfo(park: NationalPark): void {
@@ -169,23 +189,11 @@ function populateInfo(park: NationalPark): void {
 }
 
 $headerHomeButton1.addEventListener('click', () => {
-  $listViewTitle!.textContent = 'All National Parks';
-  displayList(data.parks);
-  $countH2!.classList.add('hidden');
-  $mainListContainer.classList.remove('hidden');
-  $mainInfoContainer.classList.add('hidden');
-  $sectionInfo.classList.remove('hidden');
-  $sectionForm.classList.add('hidden');
+  viewSwap('main-list');
 });
 
 $headerHomeButton2.addEventListener('click', () => {
-  $listViewTitle!.textContent = 'All National Parks';
-  displayList(data.parks);
-  $countH2!.classList.add('hidden');
-  $mainListContainer.classList.remove('hidden');
-  $mainInfoContainer.classList.add('hidden');
-  $sectionInfo.classList.remove('hidden');
-  $sectionForm.classList.add('hidden');
+  viewSwap('main-list');
 });
 
 $infoButtons.addEventListener('click', (event: Event) => {
@@ -193,9 +201,8 @@ $infoButtons.addEventListener('click', (event: Event) => {
   const buttonText = eventTarget.closest('button')?.textContent?.trim();
   if (buttonText === 'Add to Journal') {
     currentStatus = 'visited';
-    $infoButtons.classList.add('hidden');
-    $sectionInfo.classList.add('hidden');
-    $sectionForm.classList.remove('hidden');
+    viewSwap('visit-form');
+    $activitySelect!.textContent = '';
     currentPark!.activities.forEach((activity: string) => {
       const $activityOption = document.createElement('option');
       $activityOption.setAttribute('value', `${activity.replace(/\s/g, '')}`);
@@ -246,17 +253,10 @@ $form?.addEventListener('submit', (event: Event) => {
       }
     }
   }
-  $mainListContainer.classList.remove('hidden');
-  displayList(data.parks);
-  $mainInfoContainer.classList.add('hidden');
-  $infoButtons.classList.remove('hidden');
-  $sectionInfo.classList.remove('hidden');
-  $sectionForm.classList.add('hidden');
-  $countH2!.classList.add('hidden');
+  viewSwap('journal-list');
   currentIndex = 1000;
   currentStatus = undefined;
   currentPark = undefined;
-  $form.reset();
 });
 
 function longToX(longitude: number): number {
@@ -269,14 +269,5 @@ function latToY(latitude: number): number {
 }
 
 $visitedHeaderButton?.addEventListener('click', () => {
-  $mainInfoContainer.classList.add('hidden');
-  $infoButtons.classList.remove('hidden');
-  $sectionInfo.classList.remove('hidden');
-  $sectionForm.classList.add('hidden');
-  $form.reset();
-  $mainListContainer.classList.remove('hidden');
-  $listViewTitle!.textContent = 'Park Journal';
-  $countH2!.textContent = `${data.parkCount}/63`;
-  $countH2!.classList.remove('hidden');
-  displayList(visitedParks);
+  viewSwap('journal-list');
 });
