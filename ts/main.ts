@@ -19,6 +19,7 @@ const $infoParkName = document.querySelector('.col-park-name h1');
 const $infoParkState = document.querySelector('.col-park-name h3');
 const $infoParkDescription = document.querySelector('.main-park-info h5');
 const $activityTitle = document.querySelector('.info .activities-list > h3');
+const $listViewTitle = document.querySelector('.map-column h1');
 const $infoActivities = document.querySelector('.activities-list tbody');
 const $infoButtons = document.querySelector('.col-buttons');
 // const $infoEvents = document.querySelector(".events-list tbody");
@@ -31,10 +32,14 @@ const $iframe = document.querySelector('.activities iframe');
 // const $dateToVisit = document.querySelector(".wishlist-dates h5");
 const $dateVisitedCol = document.querySelector('.visited-dates');
 const $dateVisited = document.querySelector('.visited-dates h5');
+const $visitedHeaderButton = document.querySelector('.header-visited-button');
 
 let currentPark: NationalPark | undefined;
 let currentIndex: number;
 let currentStatus: undefined | 'visited' | 'wishlist';
+const visitedParks = data.parks.filter(
+  (park: NationalPark) => park.status === 'visited',
+);
 
 if (
   !$sectionMain ||
@@ -91,7 +96,7 @@ function createParkListItem(parkData: NationalPark): HTMLDivElement {
 }
 
 function displayList(parkData: NationalPark[]): void {
-  $scrollMenuDiv!.textContent = '.';
+  $scrollMenuDiv!.textContent = '';
   for (const park of parkData) {
     const $listItem = createParkListItem(park);
     $scrollMenuDiv?.appendChild($listItem);
@@ -102,10 +107,13 @@ $heroButtonRow.addEventListener('click', (event: Event) => {
   const eventTarget = event.target as HTMLElement;
   if (eventTarget.closest('div')!.dataset.view === 'main-list') {
     displayList(data.parks);
-    $heroContainer.classList.add('hidden');
-    $sectionMain.classList.remove('hidden');
-    $mainListContainer.classList.remove('hidden');
+  } else if (eventTarget.closest('div')!.dataset.view === 'journal-list') {
+    $listViewTitle!.textContent = 'Park Journal';
+    displayList(visitedParks);
   }
+  $heroContainer.classList.add('hidden');
+  $sectionMain.classList.remove('hidden');
+  $mainListContainer.classList.remove('hidden');
 });
 
 $scrollMenuDiv.addEventListener('click', (event: Event) => {
@@ -144,7 +152,6 @@ function populateInfo(park: NationalPark): void {
     });
   } else if (park.status === 'visited') {
     $dateVisited!.textContent = `${park.datesVisitedStart} - ${park.datesVisitedEnd}`;
-    console.log($activityTitle);
     $activityTitle!.textContent = 'Activities Done';
     park.activitiesDone!.forEach((activity: string) => {
       const $tr = document.createElement('tr');
@@ -159,12 +166,14 @@ function populateInfo(park: NationalPark): void {
 }
 
 $headerHomeButton1.addEventListener('click', () => {
+  $listViewTitle!.textContent = 'All National Parks';
   displayList(data.parks);
   $mainListContainer.classList.remove('hidden');
   $mainInfoContainer.classList.add('hidden');
 });
 
 $headerHomeButton2.addEventListener('click', () => {
+  $listViewTitle!.textContent = 'All National Parks';
   displayList(data.parks);
   $mainListContainer.classList.remove('hidden');
   $mainInfoContainer.classList.add('hidden');
@@ -244,3 +253,8 @@ function latToY(latitude: number): number {
   const latRad = (latitude * Math.PI) / 180;
   return earthRadiusM * Math.log(Math.tan(Math.PI / 4 + latRad / 2));
 }
+
+$visitedHeaderButton?.addEventListener('click', () => {
+  $listViewTitle!.textContent = 'Park Journal';
+  displayList(visitedParks);
+});

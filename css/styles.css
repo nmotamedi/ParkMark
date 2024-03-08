@@ -84,10 +84,6 @@ img {
   font-family: lekton, serif;
 }
 
-button:hover {
-  cursor: pointer;
-}
-
 i,
 .header-title {
   color: #0005;
@@ -148,10 +144,6 @@ header {
 .list-col {
   flex-basis: 40%;
   margin: 2rem;
-}
-
-.scrollmenu:hover {
-  cursor: pointer;
 }
 
 div.scrollmenu {
@@ -251,7 +243,10 @@ tr:nth-child(even) {
 }
 
 .header-home-button:hover,
-.header-title:hover {
+.header-title:hover,
+button:hover,
+.scrollmenu:hover,
+a:hover {
   cursor: pointer;
 }
 
