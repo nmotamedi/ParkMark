@@ -116,6 +116,8 @@ $heroButtonRow.addEventListener('click', (event: Event) => {
 
 function viewSwap(view: string): void {
   $form.reset();
+  $dateEndInput?.removeAttribute('min');
+  $dateEndInput?.removeAttribute('value');
   if (view === 'main-list' || view === 'journal-list') {
     $heroContainer?.classList.add('hidden');
     $sectionMain?.classList.remove('hidden');
