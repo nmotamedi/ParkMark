@@ -30,6 +30,8 @@ async function getParksData(url) {
         states: park.states,
         activities: parkActivities,
         description: park.description,
+        latitude: +park.latitude,
+        longitude: +park.longitude,
       };
       data.parks.push(parkObj);
     }

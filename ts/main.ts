@@ -1,26 +1,46 @@
+interface FormElements extends HTMLFormControlsCollection {
+  tripStart: HTMLInputElement;
+  tripEnd: HTMLInputElement;
+  events?: HTMLSelectElement;
+  activities?: HTMLSelectElement;
+}
+
 const $heroContainer = document.querySelector('.hero.container');
 const $scrollMenuDiv = document.querySelector('.scrollmenu');
 const $heroButtonRow = document.querySelector('.hero-button-row');
-const $section = document.querySelector('section');
+const $sectionMain = document.querySelector('.main');
+const $sectionInfo = document.querySelector('.info');
+const $sectionForm = document.querySelector('.form');
+const $activitySelect = document.querySelector('#activities');
 const $mainListContainer = document.querySelector('.main-list-container');
 const $mainInfoContainer = document.querySelector('.main-park-info');
 const $infoParkName = document.querySelector('.col-park-name h1');
 const $infoParkState = document.querySelector('.col-park-name h3');
 const $infoParkDescription = document.querySelector('.main-park-info h5');
 const $infoActivities = document.querySelector('.activities-list tbody');
+const $infoButtons = document.querySelector('.col-buttons');
 // const $infoEvents = document.querySelector(".events-list tbody");
 const $headerHomeButton1 = document.querySelector('.header-home-button');
 const $headerHomeButton2 = document.querySelector('.header-title');
 const $infoPhoto = document.querySelector('.photo-info-row') as HTMLDivElement;
+const $form = document.querySelector('#submission-form') as HTMLFormElement;
+
+let currentPark: NationalPark | undefined;
+let currentIndex: number;
+let currentStatus: undefined | 'visited' | 'wishlist';
+
 if (
-  !$section ||
+  !$sectionMain ||
+  !$sectionForm ||
+  !$sectionInfo ||
   !$mainListContainer ||
   !$scrollMenuDiv ||
   !$heroButtonRow ||
   !$heroContainer ||
   !$mainInfoContainer ||
   !$headerHomeButton1 ||
-  !$headerHomeButton2
+  !$headerHomeButton2 ||
+  !$infoButtons
 )
   throw new Error(
     '$scrollMenuDiv, $heroContainer, or $heroButtonRow query failed.',
@@ -69,7 +89,7 @@ $heroButtonRow.addEventListener('click', (event: Event) => {
   if (eventTarget.closest('div')!.dataset.view === 'main-list') {
     displayList(data.parks);
     $heroContainer.classList.add('hidden');
-    $section.classList.remove('hidden');
+    $sectionMain.classList.remove('hidden');
     $mainListContainer.classList.remove('hidden');
   }
 });
@@ -78,10 +98,11 @@ $scrollMenuDiv.addEventListener('click', (event: Event) => {
   const eventTarget = event.target as HTMLElement;
   const nearestDIV = eventTarget.closest('div.list-item') as HTMLDivElement;
   const parkClicked = nearestDIV.dataset.park;
-  const parkInfo = data.parks.find(
-    (park: NationalPark) => park.fullName === parkClicked,
-  );
-  populateInfo(parkInfo!);
+  currentPark = data.parks.find((park: NationalPark, index: number) => {
+    currentIndex = index;
+    return park.fullName === parkClicked;
+  });
+  populateInfo(currentPark!);
   $mainListContainer.classList.add('hidden');
   $mainInfoContainer.classList.remove('hidden');
 });
@@ -111,4 +132,53 @@ $headerHomeButton2.addEventListener('click', () => {
   displayList(data.parks);
   $mainListContainer.classList.remove('hidden');
   $mainInfoContainer.classList.add('hidden');
+});
+
+$infoButtons.addEventListener('click', (event: Event) => {
+  const eventTarget = event.target as HTMLElement;
+  const buttonText = eventTarget.closest('button')?.textContent?.trim();
+  console.log(buttonText);
+  if (buttonText === 'Add to Journal') {
+    currentStatus = 'visited';
+    $infoButtons.classList.add('hidden');
+    $sectionInfo.classList.add('hidden');
+    $sectionForm.classList.remove('hidden');
+    currentPark!.activities.forEach((activity: string) => {
+      const $activityOption = document.createElement('option');
+      $activityOption.setAttribute('value', `${activity.replace(/\s/g, '')}`);
+      $activityOption.textContent = activity;
+      $activitySelect?.appendChild($activityOption);
+    });
+  }
+});
+
+$form?.addEventListener('submit', (event: Event) => {
+  event.preventDefault();
+  const eventTarget = event.target as HTMLFormElement;
+  const $formElements = eventTarget.elements as FormElements;
+  console.log($formElements);
+  data.parks[currentIndex].status = currentStatus;
+  if (currentStatus === 'visited') {
+    if (data.parks[currentIndex].fullName === 'Sequoia & Kings Canyon') {
+      data.parkCount += 2;
+    } else {
+      data.parkCount++;
+    }
+    data.parks[currentIndex].datesVisitedStart = $formElements.tripStart.value;
+    data.parks[currentIndex].datesVisitedEnd = $formElements.tripEnd.value;
+    if ($formElements.activities?.value) {
+      console.log($formElements.activities);
+      data.parks[currentIndex].activitiesDone = $formElements.activities.value;
+    }
+  } else if (currentStatus === 'wishlist') {
+    data.parks[currentIndex].datesToVisitStart = $formElements.tripStart.value;
+    data.parks[currentIndex].datesToVisitEnd = $formElements.tripEnd.value;
+    if ($formElements.activities?.value) {
+      data.parks[currentIndex].activitiesToDo = $formElements.activities.value;
+    }
+    if ($formElements.events?.value) {
+      data.parks[currentIndex].eventsToDo = $formElements.events.value;
+    }
+  }
+  $form.reset();
 });

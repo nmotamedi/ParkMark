@@ -64,7 +64,7 @@
         </div>
       </div>
     </div>
-    <section class="hidden">
+    <section class="main hidden">
       <header>
         <div class="row header-row">
           <div class="column-half">
@@ -127,78 +127,138 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="column-full">
-              <h5></h5>
-            </div>
-          </div>
-          <div class="row page-activities">
-            <div class="column-half activities">
-              <div class="row">
-                <div class="column-full activities wishlist visited hidden">
-                  <h3>Dates Visited</h3>
-                  <h5>XXX-XXX</h5>
+          <section class="form hidden">
+            <form id="submission-form">
+              <div class="row page-activities">
+                <div class="column-half activities">
+                  <div class="row">
+                    <div class="column-full visited wishlist activities">
+                      <h3>Dates Visited</h3>
+                      <input
+                        type="date"
+                        id="start"
+                        name="tripStart"
+                        min="1975-01-01"
+                        max="2024-12-31"
+                        required />
+                      <p>-</p>
+                      <input
+                        type="date"
+                        id="end"
+                        name="tripEnd"
+                        min="1975-01-01"
+                        max="2024-12-31"
+                        required />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="column-full visited wishlist activities">
+                      <h3>Hikes Done</h3>
+                      <iframe
+                        style="width: 100%; max-width: 1200px; height: 500px"
+                        src="https://hikingproject.com/widget/map?favs=1&amp;location=fixed&amp;x=-12358235&amp;y=5448401&amp;z=9.4&amp;h=500"></iframe>
+                    </div>
+                  </div>
+                </div>
+                <div class="column-half activities activities-list">
+                  <div class="row">
+                    <div
+                      class="column-full activities events-list wishlist hidden">
+                      <h3>Events to Do</h3>
+                      <select name="events" id="events" multiple></select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div
+                      class="column-full activities activities-list visited wishlist">
+                      <h3>Activities Done</h3>
+                      <select name="activities" id="activities" multiple>
+                        <option value="">Select Activities</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row submit-row">
+                    <button type="submit" id="form-submit">SUBMIT</button>
+                  </div>
                 </div>
               </div>
-              <div class="row">
-                <div class="column-full activities">
-                  <h3>Hikes</h3>
-                  <iframe
-                    style="width: 100%; max-width: 1200px; height: 500px"
-                    src="https://hikingproject.com/widget/map?favs=1&amp;location=fixed&amp;x=-12358235&amp;y=5448401&amp;z=9.4&amp;h=500"></iframe>
-                </div>
-              </div>
-              <div class="row">
-                <div class="column-full activities events-list wishlist hidden">
-                  <h3>Events</h3>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Dates</th>
-                        <th>Event</th>
-                        <th>Location</th>
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
-                </div>
+            </form>
+          </section>
+          <section class="info">
+            <div class="row">
+              <div class="column-full">
+                <h5></h5>
               </div>
             </div>
-            <div class="column-half activities activities-list">
-              <h3>Activities</h3>
-              <table>
-                <tbody>
-                  <tr>
-                    <td>Activity</td>
-                  </tr>
-                  <tr>
-                    <td>Activity</td>
-                  </tr>
-                  <tr>
-                    <td>Activity</td>
-                  </tr>
-                  <tr>
-                    <td>Activity</td>
-                  </tr>
-                  <tr>
-                    <td>Activity</td>
-                  </tr>
-                  <tr>
-                    <td>Activity</td>
-                  </tr>
-                  <tr>
-                    <td>Activity</td>
-                  </tr>
-                  <tr>
-                    <td>Activity</td>
-                  </tr>
-                  <tr>
-                    <td>Activity</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="row page-activities">
+              <div class="column-half activities">
+                <div class="row">
+                  <div class="column-full activities wishlist visited hidden">
+                    <h3>Dates Visited</h3>
+                    <h5>XXX-XXX</h5>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="column-full activities">
+                    <h3>Hikes</h3>
+                    <iframe
+                      style="width: 100%; max-width: 1200px; height: 500px"
+                      src="https://hikingproject.com/widget/map?favs=1&amp;location=fixed&amp;x=-12358235&amp;y=5448401&amp;z=9.4&amp;h=500"></iframe>
+                  </div>
+                </div>
+                <div class="row">
+                  <div
+                    class="column-full activities events-list wishlist hidden">
+                    <h3>Events</h3>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Dates</th>
+                          <th>Event</th>
+                          <th>Location</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="column-half activities activities-list">
+                <h3>Activities</h3>
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>Activity</td>
+                    </tr>
+                    <tr>
+                      <td>Activity</td>
+                    </tr>
+                    <tr>
+                      <td>Activity</td>
+                    </tr>
+                    <tr>
+                      <td>Activity</td>
+                    </tr>
+                    <tr>
+                      <td>Activity</td>
+                    </tr>
+                    <tr>
+                      <td>Activity</td>
+                    </tr>
+                    <tr>
+                      <td>Activity</td>
+                    </tr>
+                    <tr>
+                      <td>Activity</td>
+                    </tr>
+                    <tr>
+                      <td>Activity</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          </section>
         </div>
       </main>
     </section>

@@ -7,11 +7,15 @@ interface NationalPark {
   states: string;
   description: string;
   status?: string;
-  activitiesDone?: string[];
-  activitiesToDo?: string[];
-  eventsToDo?: string[];
-  datesVisited?: string;
-  datesToVisit?: string;
+  activitiesDone?: string;
+  activitiesToDo?: string;
+  eventsToDo?: string;
+  datesVisitedStart?: string;
+  datesVisitedEnd?: string;
+  datesToVisitStart?: string;
+  datesToVisitEnd?: string;
+  latitude: number;
+  longitude: number;
 }
 
 interface Park {
@@ -28,6 +32,8 @@ interface Park {
   }[];
   states: string;
   description: string;
+  latitude: string;
+  longitude: string;
 }
 
 let data: {
@@ -68,6 +74,8 @@ async function getParksData(url: string): Promise<void> {
         states: park.states,
         activities: parkActivities,
         description: park.description,
+        latitude: +park.latitude,
+        longitude: +park.longitude,
       };
       data.parks.push(parkObj);
     }
