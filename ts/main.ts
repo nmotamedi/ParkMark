@@ -36,6 +36,10 @@ const $countH2 = document.querySelector('.list-title-row h2');
 const $dateStartInput = document.querySelector('#start');
 const $dateEndInput = document.querySelector('#end');
 
+const today: string[] = new Date().toISOString().split('T');
+$dateStartInput?.setAttribute('max', today[0]);
+$dateEndInput?.setAttribute('max', today[0]);
+
 let currentPark: NationalPark | undefined;
 let currentIndex: number;
 let currentStatus: undefined | 'visited' | 'wishlist';
