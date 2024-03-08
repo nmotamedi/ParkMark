@@ -33,11 +33,12 @@ const $iframe = document.querySelector('.activities iframe');
 const $dateVisitedCol = document.querySelector('.visited-dates');
 const $dateVisited = document.querySelector('.visited-dates h5');
 const $visitedHeaderButton = document.querySelector('.header-visited-button');
+const $countH2 = document.querySelector('.list-title-row h2');
 
 let currentPark: NationalPark | undefined;
 let currentIndex: number;
 let currentStatus: undefined | 'visited' | 'wishlist';
-const visitedParks = data.parks.filter(
+let visitedParks = data.parks.filter(
   (park: NationalPark) => park.status === 'visited',
 );
 
@@ -109,6 +110,8 @@ $heroButtonRow.addEventListener('click', (event: Event) => {
     displayList(data.parks);
   } else if (eventTarget.closest('div')!.dataset.view === 'journal-list') {
     $listViewTitle!.textContent = 'Park Journal';
+    $countH2!.textContent = `${data.parkCount}/63`;
+    $countH2!.classList.remove('hidden');
     displayList(visitedParks);
   }
   $heroContainer.classList.add('hidden');
@@ -168,15 +171,21 @@ function populateInfo(park: NationalPark): void {
 $headerHomeButton1.addEventListener('click', () => {
   $listViewTitle!.textContent = 'All National Parks';
   displayList(data.parks);
+  $countH2!.classList.add('hidden');
   $mainListContainer.classList.remove('hidden');
   $mainInfoContainer.classList.add('hidden');
+  $sectionInfo.classList.remove('hidden');
+  $sectionForm.classList.add('hidden');
 });
 
 $headerHomeButton2.addEventListener('click', () => {
   $listViewTitle!.textContent = 'All National Parks';
   displayList(data.parks);
+  $countH2!.classList.add('hidden');
   $mainListContainer.classList.remove('hidden');
   $mainInfoContainer.classList.add('hidden');
+  $sectionInfo.classList.remove('hidden');
+  $sectionForm.classList.add('hidden');
 });
 
 $infoButtons.addEventListener('click', (event: Event) => {
@@ -201,6 +210,9 @@ $form?.addEventListener('submit', (event: Event) => {
   const eventTarget = event.target as HTMLFormElement;
   const $formElements = eventTarget.elements as FormElements;
   data.parks[currentIndex].status = currentStatus;
+  visitedParks = data.parks.filter(
+    (park: NationalPark) => park.status === 'visited',
+  );
   if (currentStatus === 'visited') {
     if (data.parks[currentIndex].fullName === 'Sequoia & Kings Canyon') {
       data.parkCount += 2;
@@ -234,11 +246,13 @@ $form?.addEventListener('submit', (event: Event) => {
       }
     }
   }
-  $mainListContainer.classList.add('hidden');
-  $mainInfoContainer.classList.remove('hidden');
+  $mainListContainer.classList.remove('hidden');
+  displayList(data.parks);
+  $mainInfoContainer.classList.add('hidden');
   $infoButtons.classList.remove('hidden');
   $sectionInfo.classList.remove('hidden');
   $sectionForm.classList.add('hidden');
+  $countH2!.classList.add('hidden');
   currentIndex = 1000;
   currentStatus = undefined;
   currentPark = undefined;
@@ -255,6 +269,14 @@ function latToY(latitude: number): number {
 }
 
 $visitedHeaderButton?.addEventListener('click', () => {
+  $mainInfoContainer.classList.add('hidden');
+  $infoButtons.classList.remove('hidden');
+  $sectionInfo.classList.remove('hidden');
+  $sectionForm.classList.add('hidden');
+  $form.reset();
+  $mainListContainer.classList.remove('hidden');
   $listViewTitle!.textContent = 'Park Journal';
+  $countH2!.textContent = `${data.parkCount}/63`;
+  $countH2!.classList.remove('hidden');
   displayList(visitedParks);
 });
