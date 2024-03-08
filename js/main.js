@@ -20,7 +20,8 @@ const $headerHomeButton1 = document.querySelector('.header-home-button');
 const $headerHomeButton2 = document.querySelector('.header-title');
 const $infoPhoto = document.querySelector('.photo-info-row');
 const $form = document.querySelector('#submission-form');
-const $iframes = document.querySelectorAll('.activities iframe');
+const $iframesDiv = document.querySelectorAll('.hikes-div');
+let $iframes = document.querySelectorAll('.hikes-div iframe');
 const $dateVisitedCol = document.querySelector('.visited-dates');
 const $dateVisited = document.querySelector('.visited-dates h5');
 const $visitedHeaderButton = document.querySelector('.header-visited-button');
@@ -152,9 +153,17 @@ function populateInfo(park) {
   const x = longToX(park.longitude);
   const y = latToY(park.latitude);
   const URL = `https://hikingproject.com/widget/map?favs=1&amp;location=fixed&amp;x=${x}&amp;y=${y}&amp;z=9.4&amp;h=500`;
-  $iframes?.forEach(($iframe) => {
+  $iframesDiv?.forEach(($iframeDiv, index) => {
+    $iframeDiv.removeChild($iframes[index]);
+    const $iframe = document.createElement('iframe');
+    $iframe.setAttribute(
+      'style',
+      'width: 100%; max-width: 1200px; height: 500px',
+    );
     $iframe.setAttribute('src', URL);
+    $iframeDiv.appendChild($iframe);
   });
+  $iframes = document.querySelectorAll('.hikes-div iframe');
   $infoPhoto.style.backgroundImage = `url(${park.imgURL})`;
   if (!park.status) {
     park.activities.forEach((activity) => {
@@ -246,11 +255,13 @@ $form?.addEventListener('submit', (event) => {
   currentPark = undefined;
 });
 function longToX(longitude) {
-  return earthRadiusM * ((longitude * Math.PI) / 180);
+  return Math.round(earthRadiusM * ((longitude * Math.PI) / 180));
 }
 function latToY(latitude) {
   const latRad = (latitude * Math.PI) / 180;
-  return earthRadiusM * Math.log(Math.tan(Math.PI / 4 + latRad / 2));
+  return Math.round(
+    earthRadiusM * Math.log(Math.tan(Math.PI / 4 + latRad / 2)),
+  );
 }
 $visitedHeaderButton?.addEventListener('click', () => {
   viewSwap('journal-list');
