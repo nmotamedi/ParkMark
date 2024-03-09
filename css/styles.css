@@ -332,3 +332,7 @@ option {
   font-family: roboto, sans-serif;
   font-weight: 300;
 }
+
+.list-item .fa-solid {
+  font-size: 1.5rem;
+}
