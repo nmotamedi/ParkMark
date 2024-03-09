@@ -7,12 +7,14 @@ const $sectionMain = document.querySelector('.main');
 const $sectionInfo = document.querySelector('.info');
 const $sectionForm = document.querySelector('.form');
 const $activitySelect = document.querySelector('#activities');
+const $eventSelect = document.querySelector('#events');
 const $mainListContainer = document.querySelector('.main-list-container');
 const $mainInfoContainer = document.querySelector('.main-park-info');
 const $infoParkName = document.querySelector('.col-park-name h1');
 const $infoParkState = document.querySelector('.col-park-name h3');
 const $infoParkDescription = document.querySelector('.main-park-info h5');
 const $activityTitle = document.querySelector('.info .activities-list > h3');
+const $activityFormTitle = document.querySelector('.activities-list-form > h3');
 const $listViewTitle = document.querySelector('.map-column h1');
 const $infoActivities = document.querySelector('.activities-list tbody');
 const $infoButtons = document.querySelector('.col-buttons');
@@ -28,13 +30,23 @@ const $visitedHeaderButton = document.querySelector('.header-visited-button');
 const $countH2 = document.querySelector('.list-title-row h2');
 const $dateStartInput = document.querySelector('#start');
 const $dateEndInput = document.querySelector('#end');
+const $eventsForm = document.querySelector('.events-list-form');
+const $dateTitle = document.querySelector('.date-input-title h3');
+const $hikeTitle = document.querySelector('.hikes-form > h3');
+const $infoEvents = document.querySelector('.events-list tbody');
+const $dateToVisitCol = document.querySelector('.wishlist-dates');
+const $dateToVisit = document.querySelector('.wishlist-dates h5');
+const $infoEventsDiv = document.querySelector('.events-list');
+const $wishlistHeaderButton = document.querySelector('.header-wishlist-button');
 const today = new Date().toISOString().split('T');
 $dateStartInput?.setAttribute('max', today[0]);
 $dateEndInput?.setAttribute('max', today[0]);
+let startDate;
 let currentPark;
 let currentIndex;
 let currentStatus;
 let visitedParks = data.parks.filter((park) => park.status === 'visited');
+let wishlistParks = data.parks.filter((park) => park.status === 'wishlist');
 if (
   !$sectionMain ||
   !$sectionForm ||
@@ -100,13 +112,23 @@ $heroButtonRow.addEventListener('click', (event) => {
     viewSwap('main-list');
   } else if (eventTarget.closest('div').dataset.view === 'journal-list') {
     viewSwap('journal-list');
+  } else if (eventTarget.closest('div').dataset.view === 'wish-list') {
+    viewSwap('wishlist-list');
   }
 });
 function viewSwap(view) {
   $form.reset();
   $dateEndInput?.removeAttribute('min');
   $dateEndInput?.removeAttribute('value');
-  if (view === 'main-list' || view === 'journal-list') {
+  startDate = undefined;
+  if (
+    view === 'main-list' ||
+    view === 'journal-list' ||
+    view === 'wishlist-list'
+  ) {
+    currentIndex = 1000;
+    currentStatus = undefined;
+    currentPark = undefined;
     $heroContainer?.classList.add('hidden');
     $sectionMain?.classList.remove('hidden');
     $mainListContainer?.classList.remove('hidden');
@@ -120,17 +142,41 @@ function viewSwap(view) {
       $countH2.classList.add('hidden');
     } else if (view === 'journal-list') {
       displayList(visitedParks);
-      $listViewTitle.textContent = 'My Park Journal';
+      $listViewTitle.textContent = 'Park Journal';
       $countH2.textContent = `${data.parkCount}/63`;
       $countH2.classList.remove('hidden');
+    } else if (view === 'wishlist-list') {
+      $listViewTitle.textContent = 'Travel Plans';
+      displayList(wishlistParks);
+      $countH2.classList.add('hidden');
     }
   } else if (view === 'info') {
     $mainListContainer?.classList.add('hidden');
     $mainInfoContainer?.classList.remove('hidden');
-  } else if (view === 'visit-form') {
+  } else if (view === 'visit-form' || view === 'wishlist-form') {
     $infoButtons?.classList.add('hidden');
     $sectionInfo?.classList.add('hidden');
     $sectionForm?.classList.remove('hidden');
+    if (view === 'wishlist-form') {
+      $eventsForm?.classList.remove('hidden');
+      $activityFormTitle.textContent = 'Activities To Do';
+      $dateTitle.textContent = 'Dates To Visit';
+      $hikeTitle.textContent = 'Hikes To Do';
+      $dateStartInput?.setAttribute('min', today[0]);
+      $dateEndInput?.setAttribute('min', today[0]);
+      $dateStartInput?.removeAttribute('max');
+      $dateEndInput?.removeAttribute('max');
+      $eventSelect.textContent = '';
+    } else if (view === 'visit-form') {
+      $activityFormTitle.textContent = 'Activities Done';
+      $dateTitle.textContent = 'Dates Visited';
+      $hikeTitle.textContent = 'Hikes Done';
+      $dateStartInput?.setAttribute('max', today[0]);
+      $dateEndInput?.setAttribute('max', today[0]);
+      $dateStartInput?.removeAttribute('min');
+      $dateEndInput?.removeAttribute('min');
+      $eventsForm?.classList.add('hidden');
+    }
   }
 }
 $scrollMenuDiv.addEventListener('click', (event) => {
@@ -149,6 +195,7 @@ function populateInfo(park) {
   $infoParkState.textContent = park.states;
   $activityTitle.textContent = 'Activities';
   $infoParkDescription.textContent = park.description;
+  $infoEventsDiv?.classList.add('hidden');
   $infoActivities.textContent = '';
   const x = longToX(park.longitude);
   const y = latToY(park.latitude);
@@ -169,6 +216,7 @@ function populateInfo(park) {
     park.activities.forEach((activity) => {
       $infoButtons?.classList.remove('hidden');
       $dateVisitedCol?.classList.add('hidden');
+      $dateToVisitCol?.classList.add('hidden');
       const $tr = document.createElement('tr');
       const $td = document.createElement('td');
       $td.textContent = activity;
@@ -187,6 +235,26 @@ function populateInfo(park) {
     });
     $infoButtons?.classList.add('hidden');
     $dateVisitedCol?.classList.remove('hidden');
+  } else if (park.status === 'wishlist') {
+    $dateToVisit.textContent = `${park.datesToVisitStart} - ${park.datesToVisitEnd}`;
+    $activityTitle.textContent = 'Activities To Do';
+    park.activitiesToDo.forEach((activity) => {
+      const $tr = document.createElement('tr');
+      const $td = document.createElement('td');
+      $td.textContent = activity;
+      $tr.appendChild($td);
+      $infoActivities.appendChild($tr);
+    });
+    park.eventsToDo.forEach((activity) => {
+      const $tr = document.createElement('tr');
+      const $td = document.createElement('td');
+      $td.textContent = activity;
+      $tr.appendChild($td);
+      $infoEvents.appendChild($tr);
+    });
+    $infoButtons?.classList.add('hidden');
+    $dateToVisitCol?.classList.remove('hidden');
+    $infoEventsDiv?.classList.remove('hidden');
   }
 }
 $headerHomeButton1.addEventListener('click', () => {
@@ -208,6 +276,16 @@ $infoButtons.addEventListener('click', (event) => {
       $activityOption.textContent = activity;
       $activitySelect?.appendChild($activityOption);
     });
+  } else if (buttonText === 'Add Travel Plan') {
+    currentStatus = 'wishlist';
+    viewSwap('wishlist-form');
+    $activitySelect.textContent = '';
+    currentPark.activities.forEach((activity) => {
+      const $activityOption = document.createElement('option');
+      $activityOption.setAttribute('value', `${activity.replace(/\s/g, '')}`);
+      $activityOption.textContent = activity;
+      $activitySelect?.appendChild($activityOption);
+    });
   }
 });
 $form?.addEventListener('submit', (event) => {
@@ -216,6 +294,7 @@ $form?.addEventListener('submit', (event) => {
   const $formElements = eventTarget.elements;
   data.parks[currentIndex].status = currentStatus;
   visitedParks = data.parks.filter((park) => park.status === 'visited');
+  wishlistParks = data.parks.filter((park) => park.status === 'wishlist');
   if (currentStatus === 'visited') {
     if (data.parks[currentIndex].fullName === 'Sequoia & Kings Canyon') {
       data.parkCount += 2;
@@ -231,6 +310,7 @@ $form?.addEventListener('submit', (event) => {
         data.parks[currentIndex].activitiesDone.push(option.textContent);
       }
     }
+    viewSwap('journal-list');
   } else if (currentStatus === 'wishlist') {
     data.parks[currentIndex].datesToVisitStart = $formElements.tripStart.value;
     data.parks[currentIndex].datesToVisitEnd = $formElements.tripEnd.value;
@@ -248,11 +328,8 @@ $form?.addEventListener('submit', (event) => {
         data.parks[currentIndex].eventsToDo.push(option.textContent);
       }
     }
+    viewSwap('wishlist-list');
   }
-  viewSwap('journal-list');
-  currentIndex = 1000;
-  currentStatus = undefined;
-  currentPark = undefined;
 });
 function longToX(longitude) {
   return Math.round(earthRadiusM * ((longitude * Math.PI) / 180));
@@ -266,9 +343,46 @@ function latToY(latitude) {
 $visitedHeaderButton?.addEventListener('click', () => {
   viewSwap('journal-list');
 });
+$wishlistHeaderButton?.addEventListener('click', () => {
+  viewSwap('wishlist-list');
+});
 $dateStartInput?.addEventListener('input', (event) => {
   const eventTarget = event.target;
-  const startDate = eventTarget.value;
+  startDate = eventTarget.value;
   $dateEndInput?.setAttribute('min', startDate);
   $dateEndInput?.setAttribute('value', startDate);
 });
+$dateEndInput?.addEventListener('input', (eventEnd) => {
+  const eventEndTarget = eventEnd.target;
+  const endDate = eventEndTarget.value;
+  if (!startDate || !currentPark || !currentPark?.parkCode)
+    throw new Error('Unable to run function.');
+  getEventsData(startDate, endDate, currentPark.parkCode);
+});
+async function getEventsData(start, end, code) {
+  try {
+    $eventSelect.textContent = '';
+    let eventsArr = [];
+    const resp = await fetch(
+      `https://developer.nps.gov/api/v1/events?parkCode=${code}&dateStart=${start}&dateEnd=${end}`,
+      { headers },
+    );
+    if (!resp.ok) throw new Error('Network Failure');
+    const eventData = await resp.json();
+    eventData.data.forEach((events) => {
+      const singleEvent = {
+        location: events.location,
+        date: events.date,
+        title: events.title,
+      };
+      eventsArr.push(singleEvent);
+    });
+    eventsArr.forEach((events) => {
+      const $eventOption = document.createElement('option');
+      $eventOption.textContent = `${events.date} - ${events.title} - ${events.location}`;
+      $eventSelect?.appendChild($eventOption);
+    });
+  } catch (e) {
+    console.error(e);
+  }
+}

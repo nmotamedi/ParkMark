@@ -7,6 +7,7 @@ interface NationalPark {
   states: string;
   description: string;
   status?: string;
+  parkCode: string;
   activitiesDone?: string[];
   activitiesToDo?: string[];
   eventsToDo?: string[];
@@ -72,6 +73,7 @@ async function getParksData(url: string): Promise<void> {
         imgURL: park.images[0].url,
         imgAlt: park.images[0].altText,
         states: park.states,
+        parkCode: park.parkCode,
         activities: parkActivities,
         description: park.description,
         latitude: +park.latitude,

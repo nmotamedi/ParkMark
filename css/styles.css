@@ -149,7 +149,8 @@ div.scrollmenu {
   background-color: #bfbab1;
   overflow: scroll;
   white-space: nowrap;
-  height: 800px;
+  height: fit-content;
+  max-height: 800px;
 }
 
 .column-third {

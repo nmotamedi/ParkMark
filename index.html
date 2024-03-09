@@ -131,7 +131,8 @@
               <div class="row page-activities">
                 <div class="column-half activities">
                   <div class="row">
-                    <div class="column-full visited wishlist activities">
+                    <div
+                      class="column-full visited wishlist activities date-input-title">
                       <h3>Dates Visited</h3>
                       <div class="row date-row date-input">
                         <input
@@ -152,7 +153,7 @@
                   </div>
                   <div class="row">
                     <div
-                      class="column-full visited wishlist activities hikes-div">
+                      class="column-full visited wishlist activities hikes-div hikes-form">
                       <h3>Hikes Done</h3>
                       <iframe
                         src="https://www.hikingproject.com/widget/map?favs=1&amp;location=fixed&amp;x=-13039341.205778169&amp;y=4367914.794608118&amp;z=9.4&amp;h=500"></iframe>
@@ -162,18 +163,19 @@
                 <div class="column-half activities activities-list">
                   <div class="row">
                     <div
-                      class="column-full activities events-list wishlist hidden">
+                      class="column-full activities events-list-form wishlist hidden">
                       <h3>Events to Do</h3>
                       <select name="events" id="events" multiple></select>
                     </div>
                   </div>
                   <div class="row">
                     <div
-                      class="column-full activities activities-list visited wishlist">
+                      class="column-full activities activities-list activities-list-form visited wishlist">
                       <h3>Activities Done</h3>
-                      <select name="activities" id="activities" multiple>
-                        <option value="">Select Activities</option>
-                      </select>
+                      <select
+                        name="activities"
+                        id="activities"
+                        multiple></select>
                     </div>
                   </div>
                   <div class="row submit-row">
@@ -215,13 +217,13 @@
                     class="column-full activities events-list wishlist hidden">
                     <h3>Events to Do</h3>
                     <table>
-                      <thead>
+                      <!-- <thead>
                         <tr>
                           <th>Dates</th>
                           <th>Event</th>
                           <th>Location</th>
                         </tr>
-                      </thead>
+                      </thead> -->
                       <tbody></tbody>
                     </table>
                   </div>
