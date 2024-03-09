@@ -197,6 +197,7 @@ function populateInfo(park) {
   $infoParkDescription.textContent = park.description;
   $infoEventsDiv?.classList.add('hidden');
   $infoActivities.textContent = '';
+  $infoEvents.textContent = '';
   const x = longToX(park.longitude);
   const y = latToY(park.latitude);
   const URL = `https://hikingproject.com/widget/map?favs=1&amp;location=fixed&amp;x=${x}&amp;y=${y}&amp;z=9.4&amp;h=500`;
@@ -226,32 +227,50 @@ function populateInfo(park) {
   } else if (park.status === 'visited') {
     $dateVisited.textContent = `${park.datesVisitedStart} - ${park.datesVisitedEnd}`;
     $activityTitle.textContent = 'Activities Done';
-    park.activitiesDone.forEach((activity) => {
-      const $tr = document.createElement('tr');
-      const $td = document.createElement('td');
-      $td.textContent = activity;
-      $tr.appendChild($td);
-      $infoActivities.appendChild($tr);
-    });
+    if (park.activities) {
+      park.activitiesDone.forEach((activity) => {
+        const $tr = document.createElement('tr');
+        const $td = document.createElement('td');
+        $td.textContent = activity;
+        $tr.appendChild($td);
+        $infoActivities.appendChild($tr);
+      });
+    }
     $infoButtons?.classList.add('hidden');
     $dateVisitedCol?.classList.remove('hidden');
   } else if (park.status === 'wishlist') {
     $dateToVisit.textContent = `${park.datesToVisitStart} - ${park.datesToVisitEnd}`;
     $activityTitle.textContent = 'Activities To Do';
-    park.activitiesToDo.forEach((activity) => {
+    if (park.activitiesToDo) {
+      park.activitiesToDo.forEach((activity) => {
+        const $tr = document.createElement('tr');
+        const $td = document.createElement('td');
+        $td.textContent = activity;
+        $tr.appendChild($td);
+        $infoActivities.appendChild($tr);
+      });
+    } else {
       const $tr = document.createElement('tr');
       const $td = document.createElement('td');
-      $td.textContent = activity;
+      $td.textContent = 'No Activities Planned';
       $tr.appendChild($td);
       $infoActivities.appendChild($tr);
-    });
-    park.eventsToDo.forEach((activity) => {
+    }
+    if (park.eventsToDo) {
+      park.eventsToDo.forEach((activity) => {
+        const $tr = document.createElement('tr');
+        const $td = document.createElement('td');
+        $td.textContent = activity;
+        $tr.appendChild($td);
+        $infoEvents.appendChild($tr);
+      });
+    } else {
       const $tr = document.createElement('tr');
       const $td = document.createElement('td');
-      $td.textContent = activity;
+      $td.textContent = 'No Events Planned';
       $tr.appendChild($td);
       $infoEvents.appendChild($tr);
-    });
+    }
     $infoButtons?.classList.add('hidden');
     $dateToVisitCol?.classList.remove('hidden');
     $infoEventsDiv?.classList.remove('hidden');
@@ -362,7 +381,7 @@ $dateEndInput?.addEventListener('input', (eventEnd) => {
 async function getEventsData(start, end, code) {
   try {
     $eventSelect.textContent = '';
-    let eventsArr = [];
+    const eventsArr = [];
     const resp = await fetch(
       `https://developer.nps.gov/api/v1/events?parkCode=${code}&dateStart=${start}&dateEnd=${end}`,
       { headers },
