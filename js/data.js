@@ -28,6 +28,7 @@ async function getParksData(url) {
         imgURL: park.images[0].url,
         imgAlt: park.images[0].altText,
         states: park.states,
+        parkCode: park.parkCode,
         activities: parkActivities,
         description: park.description,
         latitude: +park.latitude,

@@ -149,7 +149,8 @@ div.scrollmenu {
   background-color: #bfbab1;
   overflow: scroll;
   white-space: nowrap;
-  height: 800px;
+  height: fit-content;
+  max-height: 800px;
 }
 
 .column-third {
@@ -286,7 +287,7 @@ input {
 }
 
 select {
-  width: 60%;
+  width: 75%;
   align-self: center;
 }
 
@@ -319,4 +320,19 @@ iframe {
   width: 100%;
   max-width: 1200px;
   height: 500px;
+}
+
+input,
+select,
+option {
+  background-color: #d1d1d1;
+  border-radius: 4px;
+  border: 1px #ced4da solid;
+  color: #6c757d;
+  font-family: roboto, sans-serif;
+  font-weight: 300;
+}
+
+.list-item .fa-solid {
+  font-size: 1.5rem;
 }
