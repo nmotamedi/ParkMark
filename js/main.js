@@ -19,6 +19,7 @@ const $listViewTitle = document.querySelector('.map-column h1');
 const $infoActivities = document.querySelector('.activities-list tbody');
 const $infoButtons = document.querySelector('.col-buttons');
 const $headerHomeButton1 = document.querySelector('.header-home-button');
+const $headerSearchButton = document.querySelector('.header-search');
 const $headerHomeButton2 = document.querySelector('.header-title');
 const $infoPhoto = document.querySelector('.photo-info-row');
 const $form = document.querySelector('#submission-form');
@@ -38,6 +39,9 @@ const $dateToVisitCol = document.querySelector('.wishlist-dates');
 const $dateToVisit = document.querySelector('.wishlist-dates h5');
 const $infoEventsDiv = document.querySelector('.events-list');
 const $wishlistHeaderButton = document.querySelector('.header-wishlist-button');
+const $searchBar = document.querySelector('.header-search-bar');
+const $searchBarInput = document.querySelector('#search');
+const $stateSelect = document.querySelector('#state-select');
 const today = new Date().toISOString().split('T');
 $dateStartInput?.setAttribute('max', today[0]);
 $dateEndInput?.setAttribute('max', today[0]);
@@ -63,6 +67,17 @@ if (
   throw new Error(
     '$sectionMain, $sectionForm, $sectionInfo, $mainListContainer, $scrollMenuDiv, $heroContainer, $heroButtonRow, $mainInfoContainer, $headerHomeButtons, $infoButtons query failed.',
   );
+function searchOptions() {
+  const $datalist = document.createElement('datalist');
+  $datalist.setAttribute('id', 'search-list');
+  data.parks.forEach((park) => {
+    const $option = document.createElement('option');
+    $option.setAttribute('value', park.fullName);
+    $datalist.appendChild($option);
+  });
+  $searchBar?.appendChild($datalist);
+}
+searchOptions();
 function createParkListItem(parkData) {
   const $divWrapper = document.createElement('div');
   $divWrapper.classList.add('row', 'list-item');
@@ -99,12 +114,26 @@ function createParkListItem(parkData) {
   $divWrapper.appendChild($colDiv);
   return $divWrapper;
 }
+function displayOptionList(parkData) {
+  $stateSelect.textContent = '';
+  const states = [];
+  for (const park of parkData) {
+    if (!states.includes(park.states)) {
+      states.push(park.states);
+      const $stateOption = document.createElement('option');
+      $stateOption.setAttribute('value', park.states);
+      $stateOption.textContent = park.states;
+      $stateSelect.appendChild($stateOption);
+    }
+  }
+}
 function displayList(parkData) {
   $scrollMenuDiv.textContent = '';
   for (const park of parkData) {
     const $listItem = createParkListItem(park);
     $scrollMenuDiv?.appendChild($listItem);
   }
+  displayOptionList(parkData);
 }
 $heroButtonRow.addEventListener('click', (event) => {
   const eventTarget = event.target;
@@ -118,6 +147,8 @@ $heroButtonRow.addEventListener('click', (event) => {
 });
 function viewSwap(view) {
   $form.reset();
+  $searchBarInput.value = '';
+  $searchBar?.classList.add('hidden');
   $dateEndInput?.removeAttribute('min');
   $dateEndInput?.removeAttribute('value');
   startDate = undefined;
@@ -405,3 +436,38 @@ async function getEventsData(start, end, code) {
     console.error(e);
   }
 }
+$headerSearchButton?.addEventListener('click', () => {
+  if ($searchBar?.classList.contains('hidden')) {
+    $searchBar.classList.remove('hidden');
+  } else {
+    const $searchQuery = $searchBarInput.value;
+    currentPark = data.parks.find((park, index) => {
+      currentIndex = index;
+      return park.fullName === $searchQuery;
+    });
+    populateInfo(currentPark);
+    viewSwap('info');
+    $searchBar.classList.add('hidden');
+  }
+});
+$stateSelect.addEventListener('input', () => {
+  const selectedState = $stateSelect.value;
+  let filteredList = [];
+  if ($listViewTitle.textContent === 'Travel Plans') {
+    filteredList = wishlistParks.filter((park) =>
+      park.states.includes(selectedState),
+    );
+    $listViewTitle.textContent = `${selectedState} Travel Plans`;
+  } else if ($listViewTitle.textContent === 'All National Parks') {
+    filteredList = data.parks.filter((park) =>
+      park.states.includes(selectedState),
+    );
+    $listViewTitle.textContent = `${selectedState} National Parks`;
+  } else if ($listViewTitle.textContent === 'Park Journal') {
+    filteredList = visitedParks.filter((park) =>
+      park.states.includes(selectedState),
+    );
+    $listViewTitle.textContent = `Park Journal - ${selectedState}`;
+  }
+  displayList(filteredList);
+});

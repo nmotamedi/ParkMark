@@ -336,3 +336,15 @@ option {
 .list-item .fa-solid {
   font-size: 1.5rem;
 }
+
+#search {
+  width: 100%;
+}
+
+.row.lists-row {
+  align-items: flex-start;
+}
+
+#state-select {
+  width: 100%;
+}
