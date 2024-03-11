@@ -130,7 +130,7 @@ function createParkListItem(parkData: NationalPark): HTMLDivElement {
     $icon.classList.add('fa-solid', 'fa-pencil');
   }
   $colDiv.appendChild($icon);
-  $stateH5.textContent = parkData.states;
+  $stateH5.textContent = parkData.states.join(', ');
   $stateRowDiv.appendChild($stateH5);
   $nameRowDiv.appendChild($nameH3);
   $textColDiv.appendChild($nameRowDiv);
@@ -146,21 +146,37 @@ function displayOptionList(parkData: NationalPark[]): void {
   $stateSelect.textContent = '';
   const states: string[] = [];
   for (const park of parkData) {
-    if (!states.includes(park.states)) {
-      states.push(park.states);
-      const $stateOption = document.createElement('option');
-      $stateOption.setAttribute('value', park.states);
-      $stateOption.textContent = park.states;
-      $stateSelect.appendChild($stateOption);
+    for (const state of park.states) {
+      if (!states.includes(state)) {
+        states.push(state);
+      }
     }
+  }
+  for (const state of states.sort()) {
+    const $stateOption = document.createElement('option');
+    $stateOption.setAttribute('value', state);
+    $stateOption.textContent = state;
+    $stateSelect.appendChild($stateOption);
   }
 }
 
 function displayList(parkData: NationalPark[]): void {
   $scrollMenuDiv!.textContent = '';
-  for (const park of parkData) {
-    const $listItem = createParkListItem(park);
-    $scrollMenuDiv?.appendChild($listItem);
+  if (parkData.length < 1) {
+    const $divWrapper = document.createElement('div');
+    $divWrapper.classList.add('row', 'list-item', 'empty-park');
+    const $nameRowDiv = document.createElement('div');
+    $nameRowDiv.classList.add('row');
+    const $nameH3 = document.createElement('h3');
+    $nameH3.textContent = 'Please add a park!';
+    $nameRowDiv.appendChild($nameH3);
+    $divWrapper.appendChild($nameRowDiv);
+    $scrollMenuDiv?.appendChild($divWrapper);
+  } else {
+    for (const park of parkData) {
+      const $listItem = createParkListItem(park);
+      $scrollMenuDiv?.appendChild($listItem);
+    }
   }
   displayOptionList(parkData);
 }
@@ -256,7 +272,7 @@ $scrollMenuDiv.addEventListener('click', (event: Event) => {
 
 function populateInfo(park: NationalPark): void {
   $infoParkName!.textContent = park.fullName;
-  $infoParkState!.textContent = park.states;
+  $infoParkState!.textContent = park.states.join(', ');
   $activityTitle!.textContent = 'Activities';
   $infoParkDescription!.textContent = park.description;
   $infoEventsDiv?.classList.add('hidden');
@@ -280,7 +296,7 @@ function populateInfo(park: NationalPark): void {
   ) as NodeListOf<HTMLIFrameElement>;
   $infoPhoto.style.backgroundImage = `url(${park.imgURL})`;
   if (!park.status) {
-    park.activities.forEach((activity: string) => {
+    park.activities.sort().forEach((activity: string) => {
       $infoButtons?.classList.remove('hidden');
       $dateVisitedCol?.classList.add('hidden');
       $dateToVisitCol?.classList.add('hidden');
@@ -294,7 +310,7 @@ function populateInfo(park: NationalPark): void {
     $dateVisited!.textContent = `${park.datesVisitedStart} - ${park.datesVisitedEnd}`;
     $activityTitle!.textContent = 'Activities Done';
     if (park.activities) {
-      park.activitiesDone!.forEach((activity: string) => {
+      park.activitiesDone!.sort().forEach((activity: string) => {
         const $tr = document.createElement('tr');
         const $td = document.createElement('td');
         $td.textContent = activity;
@@ -308,7 +324,7 @@ function populateInfo(park: NationalPark): void {
     $dateToVisit!.textContent = `${park.datesToVisitStart} - ${park.datesToVisitEnd}`;
     $activityTitle!.textContent = 'Activities To Do';
     if (park.activitiesToDo) {
-      park.activitiesToDo!.forEach((activity: string) => {
+      park.activitiesToDo!.sort().forEach((activity: string) => {
         const $tr = document.createElement('tr');
         const $td = document.createElement('td');
         $td.textContent = activity;
@@ -358,7 +374,7 @@ $infoButtons.addEventListener('click', (event: Event) => {
     currentStatus = 'visited';
     viewSwap('visit-form');
     $activitySelect!.textContent = '';
-    currentPark!.activities.forEach((activity: string) => {
+    currentPark!.activities.sort().forEach((activity: string) => {
       const $activityOption = document.createElement('option');
       $activityOption.setAttribute('value', `${activity.replace(/\s/g, '')}`);
       $activityOption.textContent = activity;
@@ -368,7 +384,7 @@ $infoButtons.addEventListener('click', (event: Event) => {
     currentStatus = 'wishlist';
     viewSwap('wishlist-form');
     $activitySelect!.textContent = '';
-    currentPark!.activities.forEach((activity: string) => {
+    currentPark!.activities.sort().forEach((activity: string) => {
       const $activityOption = document.createElement('option');
       $activityOption.setAttribute('value', `${activity.replace(/\s/g, '')}`);
       $activityOption.textContent = activity;
@@ -394,8 +410,12 @@ $form?.addEventListener('submit', (event: Event) => {
     } else {
       data.parkCount++;
     }
-    data.parks[currentIndex].datesVisitedStart = $formElements.tripStart.value;
-    data.parks[currentIndex].datesVisitedEnd = $formElements.tripEnd.value;
+    data.parks[currentIndex].datesVisitedStart = new Date(
+      $formElements.tripStart.value.replace(/-/g, '/'),
+    ).toDateString();
+    data.parks[currentIndex].datesVisitedEnd = new Date(
+      $formElements.tripEnd.value.replace(/-/g, '/'),
+    ).toDateString();
     if ($formElements.activities?.value) {
       const optionsArray = $formElements.activities.selectedOptions;
       data.parks[currentIndex].activitiesDone = [];
@@ -405,8 +425,12 @@ $form?.addEventListener('submit', (event: Event) => {
     }
     viewSwap('journal-list');
   } else if (currentStatus === 'wishlist') {
-    data.parks[currentIndex].datesToVisitStart = $formElements.tripStart.value;
-    data.parks[currentIndex].datesToVisitEnd = $formElements.tripEnd.value;
+    data.parks[currentIndex].datesToVisitStart = new Date(
+      $formElements.tripStart.value.replace(/-/g, '/'),
+    ).toDateString();
+    data.parks[currentIndex].datesToVisitEnd = new Date(
+      $formElements.tripEnd.value.replace(/-/g, '/'),
+    ).toDateString();
     if ($formElements.activities?.value) {
       const optionsArray = $formElements.activities.selectedOptions;
       data.parks[currentIndex].activitiesToDo = [];

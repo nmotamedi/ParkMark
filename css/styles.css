@@ -348,3 +348,7 @@ option {
 #state-select {
   width: 100%;
 }
+
+.empty-park {
+  justify-content: center;
+}
