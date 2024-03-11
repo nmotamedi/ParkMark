@@ -87,4 +87,8 @@
   .list-item.row {
     flex-wrap: nowrap;
   }
+
+  div.header-search-bar {
+    width: 25%;
+  }
 }

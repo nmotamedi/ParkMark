@@ -339,11 +339,19 @@ function populateInfo(park: NationalPark): void {
       $infoActivities!.appendChild($tr);
     }
     if (park.eventsToDo) {
-      park.eventsToDo!.forEach((activity: string) => {
+      park.eventsToDo!.forEach((eventArr: string[]) => {
         const $tr = document.createElement('tr');
-        const $td = document.createElement('td');
-        $td.textContent = activity;
-        $tr.appendChild($td);
+        const $tdDate = document.createElement('td');
+        const $tdEvent = document.createElement('td');
+        const $tdLocation = document.createElement('td');
+        $tdDate.textContent = new Date(
+          eventArr[0].replace(/-/g, '/'),
+        ).toDateString();
+        $tdEvent.textContent = eventArr[1];
+        $tdLocation.textContent = eventArr[2];
+        $tr.appendChild($tdDate);
+        $tr.appendChild($tdEvent);
+        $tr.appendChild($tdLocation);
         $infoEvents!.appendChild($tr);
       });
     } else {
@@ -442,7 +450,9 @@ $form?.addEventListener('submit', (event: Event) => {
       const optionsArray = $formElements.events.selectedOptions;
       data.parks[currentIndex].eventsToDo = [];
       for (const option of optionsArray) {
-        data.parks[currentIndex].eventsToDo!.push(option.textContent!);
+        data.parks[currentIndex].eventsToDo!.push(
+          option.textContent!.split(' - '),
+        );
       }
     }
     viewSwap('wishlist-list');

@@ -10,7 +10,7 @@ interface NationalPark {
   parkCode: string;
   activitiesDone?: string[];
   activitiesToDo?: string[];
-  eventsToDo?: string[];
+  eventsToDo?: string[][];
   datesVisitedStart?: string;
   datesVisitedEnd?: string;
   datesToVisitStart?: string;
