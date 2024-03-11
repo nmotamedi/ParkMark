@@ -10,7 +10,8 @@ h3,
 h5,
 h6,
 td,
-button {
+button,
+footer {
   font-family: roboto, sans-serif;
   font-weight: 100;
   margin: 0;
@@ -377,4 +378,22 @@ option {
 
 .park-events {
   justify-content: center;
+}
+
+footer {
+  margin-left: 1rem;
+}
+
+.header-more-button {
+  display: none;
+}
+
+.on {
+  background-color: #b7b7b755;
+}
+
+.header-more-visited-button,
+.header-more-wishlist-button {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }

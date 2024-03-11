@@ -60,6 +60,13 @@ const $searchBarInput = document.querySelector('#search') as HTMLInputElement;
 const $stateSelect = document.querySelector(
   '#state-select',
 ) as HTMLSelectElement;
+const $headerMoreButton = document.querySelector('.header-more-button');
+const $headerMoreVisitedButton = document.querySelector(
+  '.header-more-visited-button',
+);
+const $headerMoreWishlistButton = document.querySelector(
+  '.header-more-wishlist-button',
+);
 
 const today: string[] = new Date().toISOString().split('T');
 $dateStartInput?.setAttribute('max', today[0]);
@@ -475,6 +482,20 @@ $visitedHeaderButton?.addEventListener('click', () => {
 });
 
 $wishlistHeaderButton?.addEventListener('click', () => {
+  viewSwap('wishlist-list');
+});
+
+$headerMoreButton?.addEventListener('click', () => {
+  $headerMoreVisitedButton?.classList.toggle('hidden');
+  $headerMoreWishlistButton?.classList.toggle('hidden');
+  $headerMoreButton?.classList.toggle('on');
+});
+
+$headerMoreVisitedButton?.addEventListener('click', () => {
+  viewSwap('journal-list');
+});
+
+$headerMoreWishlistButton?.addEventListener('click', () => {
   viewSwap('wishlist-list');
 });
 
