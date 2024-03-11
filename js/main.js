@@ -49,6 +49,7 @@ const $headerMoreVisitedButton = document.querySelector(
 const $headerMoreWishlistButton = document.querySelector(
   '.header-more-wishlist-button',
 );
+const $modal = document.querySelector('dialog');
 const today = new Date().toISOString().split('T');
 $dateStartInput?.setAttribute('max', today[0]);
 $dateEndInput?.setAttribute('max', today[0]);
@@ -457,6 +458,7 @@ $dateStartInput?.addEventListener('input', (event) => {
 $dateEndInput?.addEventListener('input', (eventEnd) => {
   const eventEndTarget = eventEnd.target;
   const endDate = eventEndTarget.value;
+  $modal?.showModal();
   if (!startDate || !currentPark || !currentPark?.parkCode)
     throw new Error('Unable to run function.');
   getEventsData(startDate, endDate, currentPark.parkCode);
@@ -479,11 +481,18 @@ async function getEventsData(start, end, code) {
       };
       eventsArr.push(singleEvent);
     });
-    eventsArr.forEach((events) => {
+    if (eventsArr.length < 1) {
       const $eventOption = document.createElement('option');
-      $eventOption.textContent = `${events.date} - ${events.title} - ${events.location}`;
+      $eventOption.textContent = 'No Events in this window.';
       $eventSelect?.appendChild($eventOption);
-    });
+    } else {
+      eventsArr.forEach((events) => {
+        const $eventOption = document.createElement('option');
+        $eventOption.textContent = `${events.date} - ${events.title} - ${events.location}`;
+        $eventSelect?.appendChild($eventOption);
+      });
+    }
+    $modal?.close();
   } catch (e) {
     console.error(e);
   }
