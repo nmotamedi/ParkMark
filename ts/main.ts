@@ -287,13 +287,13 @@ function populateInfo(park: NationalPark): void {
   $infoEvents!.textContent = '';
   const x = longToX(park.longitude);
   const y = latToY(park.latitude);
-  const URL = `https://hikingproject.com/widget/map?favs=1&amp;location=fixed&amp;x=${x}&amp;y=${y}&amp;z=9.4&amp;h=500`;
+  const URL = `https://hikingproject.com/widget/map?favs=1&location=fixed&x=${x}&y=${y}&z=9&h=400`;
   $iframesDiv?.forEach(($iframeDiv: HTMLDivElement, index: number) => {
     $iframeDiv.removeChild($iframes[index]);
     const $iframe = document.createElement('iframe');
     $iframe.setAttribute(
       'style',
-      'width: 100%; max-width: 1200px; height: 500px',
+      'width:100%; max-width:1200px; height:400px;',
     );
     $iframe.setAttribute('src', URL);
     $iframeDiv.appendChild($iframe);
