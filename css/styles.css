@@ -252,14 +252,6 @@ tr:nth-child(even) {
   align-self: center;
 }
 
-.header-home-button:hover,
-.header-title:hover,
-button:hover,
-.scrollmenu:hover,
-a:hover {
-  cursor: pointer;
-}
-
 .main-list-container > .row {
   justify-content: space-around;
 }
@@ -396,4 +388,14 @@ footer {
 .header-more-wishlist-button {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.header-home-button:hover,
+.header-title:hover,
+button:hover,
+.scrollmenu:hover,
+a:hover,
+input:hover,
+select:hover {
+  cursor: pointer;
 }
