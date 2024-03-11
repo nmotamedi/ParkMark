@@ -4,13 +4,13 @@ interface NationalPark {
   imgURL: string;
   imgAlt: string;
   activities: string[];
-  states: string;
+  states: string[];
   description: string;
   status?: string;
   parkCode: string;
   activitiesDone?: string[];
   activitiesToDo?: string[];
-  eventsToDo?: string[];
+  eventsToDo?: string[][];
   datesVisitedStart?: string;
   datesVisitedEnd?: string;
   datesToVisitStart?: string;
@@ -72,7 +72,7 @@ async function getParksData(url: string): Promise<void> {
         fullName: park.name,
         imgURL: park.images[0].url,
         imgAlt: park.images[0].altText,
-        states: park.states,
+        states: park.states.split(','),
         parkCode: park.parkCode,
         activities: parkActivities,
         description: park.description,

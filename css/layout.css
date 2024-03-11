@@ -87,4 +87,26 @@
   .list-item.row {
     flex-wrap: nowrap;
   }
+
+  div.header-search-bar {
+    width: 43%;
+  }
+
+  .header-visited-button,
+  .header-wishlist-button {
+    display: none;
+  }
+
+  div.header-more-button {
+    display: flex;
+    flex-direction: column;
+  }
+
+  header .column-half {
+    flex-basis: 50%;
+  }
+
+  div.header-row-2 i {
+    margin-left: 0;
+  }
 }

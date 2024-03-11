@@ -61,6 +61,7 @@
           </div>
         </div>
       </div>
+      <footer>Images provided by Unsplash</footer>
     </div>
     <section class="main hidden">
       <header>
@@ -77,6 +78,9 @@
           </div>
           <div class="column-half">
             <div class="row header-row-2">
+              <div class="header-search-bar hidden">
+                <input type="search" id="search" list="search-list" />
+              </div>
               <div class="header-search">
                 <a><i class="fa-solid fa-magnifying-glass"></i></a>
               </div>
@@ -86,13 +90,22 @@
               <div class="header-wishlist-button">
                 <a><i class="fa-solid fa-pencil"></i></a>
               </div>
+              <div class="header-more-button">
+                <a><i class="fa-solid fa-ellipsis"></i></a>
+                <div class="header-more-visited-button hidden">
+                  <a><i class="fa-solid fa-book-open"></i></a>
+                </div>
+                <div class="header-more-wishlist-button hidden">
+                  <a><i class="fa-solid fa-pencil"></i></a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </header>
       <main>
         <div class="main-list-container hidden">
-          <div class="row">
+          <div class="row lists-row">
             <div class="map-column">
               <div class="row list-title-row">
                 <h1>All National Parks</h1>
@@ -105,6 +118,9 @@
               </div>
             </div>
             <div class="list-col">
+              <div class="sort-select">
+                <select class="sort-selecter" id="state-select"></select>
+              </div>
               <div class="scrollmenu"></div>
             </div>
           </div>
@@ -212,15 +228,6 @@
                       src="https://hikingproject.com/widget/map?favs=1&amp;location=fixed&amp;x=-12358235&amp;y=5448401&amp;z=9.4&amp;h=500"></iframe>
                   </div>
                 </div>
-                <div class="row">
-                  <div
-                    class="column-full activities events-list wishlist hidden">
-                    <h3>Events to Do</h3>
-                    <table>
-                      <tbody></tbody>
-                    </table>
-                  </div>
-                </div>
               </div>
               <div class="column-half activities activities-list">
                 <h3>Activities</h3>
@@ -254,6 +261,21 @@
                       <td>Activity</td>
                     </tr>
                   </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row park-events">
+              <div class="column-full activities events-list wishlist hidden">
+                <h3>Events to Do</h3>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Event</th>
+                      <th>Location</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
                 </table>
               </div>
             </div>

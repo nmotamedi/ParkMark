@@ -19,6 +19,7 @@ const $listViewTitle = document.querySelector('.map-column h1');
 const $infoActivities = document.querySelector('.activities-list tbody');
 const $infoButtons = document.querySelector('.col-buttons');
 const $headerHomeButton1 = document.querySelector('.header-home-button');
+const $headerSearchButton = document.querySelector('.header-search');
 const $headerHomeButton2 = document.querySelector('.header-title');
 const $infoPhoto = document.querySelector('.photo-info-row');
 const $form = document.querySelector('#submission-form');
@@ -38,6 +39,16 @@ const $dateToVisitCol = document.querySelector('.wishlist-dates');
 const $dateToVisit = document.querySelector('.wishlist-dates h5');
 const $infoEventsDiv = document.querySelector('.events-list');
 const $wishlistHeaderButton = document.querySelector('.header-wishlist-button');
+const $searchBar = document.querySelector('.header-search-bar');
+const $searchBarInput = document.querySelector('#search');
+const $stateSelect = document.querySelector('#state-select');
+const $headerMoreButton = document.querySelector('.header-more-button');
+const $headerMoreVisitedButton = document.querySelector(
+  '.header-more-visited-button',
+);
+const $headerMoreWishlistButton = document.querySelector(
+  '.header-more-wishlist-button',
+);
 const today = new Date().toISOString().split('T');
 $dateStartInput?.setAttribute('max', today[0]);
 $dateEndInput?.setAttribute('max', today[0]);
@@ -63,6 +74,17 @@ if (
   throw new Error(
     '$sectionMain, $sectionForm, $sectionInfo, $mainListContainer, $scrollMenuDiv, $heroContainer, $heroButtonRow, $mainInfoContainer, $headerHomeButtons, $infoButtons query failed.',
   );
+function searchOptions() {
+  const $datalist = document.createElement('datalist');
+  $datalist.setAttribute('id', 'search-list');
+  data.parks.forEach((park) => {
+    const $option = document.createElement('option');
+    $option.setAttribute('value', park.fullName);
+    $datalist.appendChild($option);
+  });
+  $searchBar?.appendChild($datalist);
+}
+searchOptions();
 function createParkListItem(parkData) {
   const $divWrapper = document.createElement('div');
   $divWrapper.classList.add('row', 'list-item');
@@ -88,7 +110,7 @@ function createParkListItem(parkData) {
     $icon.classList.add('fa-solid', 'fa-pencil');
   }
   $colDiv.appendChild($icon);
-  $stateH5.textContent = parkData.states;
+  $stateH5.textContent = parkData.states.join(', ');
   $stateRowDiv.appendChild($stateH5);
   $nameRowDiv.appendChild($nameH3);
   $textColDiv.appendChild($nameRowDiv);
@@ -99,12 +121,42 @@ function createParkListItem(parkData) {
   $divWrapper.appendChild($colDiv);
   return $divWrapper;
 }
+function displayOptionList(parkData) {
+  $stateSelect.textContent = '';
+  const states = [];
+  for (const park of parkData) {
+    for (const state of park.states) {
+      if (!states.includes(state)) {
+        states.push(state);
+      }
+    }
+  }
+  for (const state of states.sort()) {
+    const $stateOption = document.createElement('option');
+    $stateOption.setAttribute('value', state);
+    $stateOption.textContent = state;
+    $stateSelect.appendChild($stateOption);
+  }
+}
 function displayList(parkData) {
   $scrollMenuDiv.textContent = '';
-  for (const park of parkData) {
-    const $listItem = createParkListItem(park);
-    $scrollMenuDiv?.appendChild($listItem);
+  if (parkData.length < 1) {
+    const $divWrapper = document.createElement('div');
+    $divWrapper.classList.add('row', 'list-item', 'empty-park');
+    const $nameRowDiv = document.createElement('div');
+    $nameRowDiv.classList.add('row');
+    const $nameH3 = document.createElement('h3');
+    $nameH3.textContent = 'Please add a park!';
+    $nameRowDiv.appendChild($nameH3);
+    $divWrapper.appendChild($nameRowDiv);
+    $scrollMenuDiv?.appendChild($divWrapper);
+  } else {
+    for (const park of parkData) {
+      const $listItem = createParkListItem(park);
+      $scrollMenuDiv?.appendChild($listItem);
+    }
   }
+  displayOptionList(parkData);
 }
 $heroButtonRow.addEventListener('click', (event) => {
   const eventTarget = event.target;
@@ -118,6 +170,8 @@ $heroButtonRow.addEventListener('click', (event) => {
 });
 function viewSwap(view) {
   $form.reset();
+  $searchBarInput.value = '';
+  $searchBar?.classList.add('hidden');
   $dateEndInput?.removeAttribute('min');
   $dateEndInput?.removeAttribute('value');
   startDate = undefined;
@@ -192,7 +246,7 @@ $scrollMenuDiv.addEventListener('click', (event) => {
 });
 function populateInfo(park) {
   $infoParkName.textContent = park.fullName;
-  $infoParkState.textContent = park.states;
+  $infoParkState.textContent = park.states.join(', ');
   $activityTitle.textContent = 'Activities';
   $infoParkDescription.textContent = park.description;
   $infoEventsDiv?.classList.add('hidden');
@@ -200,13 +254,13 @@ function populateInfo(park) {
   $infoEvents.textContent = '';
   const x = longToX(park.longitude);
   const y = latToY(park.latitude);
-  const URL = `https://hikingproject.com/widget/map?favs=1&amp;location=fixed&amp;x=${x}&amp;y=${y}&amp;z=9.4&amp;h=500`;
+  const URL = `https://hikingproject.com/widget/map?favs=1&location=fixed&x=${x}&y=${y}&z=9&h=400`;
   $iframesDiv?.forEach(($iframeDiv, index) => {
     $iframeDiv.removeChild($iframes[index]);
     const $iframe = document.createElement('iframe');
     $iframe.setAttribute(
       'style',
-      'width: 100%; max-width: 1200px; height: 500px',
+      'width:100%; max-width:1200px; height:400px;',
     );
     $iframe.setAttribute('src', URL);
     $iframeDiv.appendChild($iframe);
@@ -214,7 +268,7 @@ function populateInfo(park) {
   $iframes = document.querySelectorAll('.hikes-div iframe');
   $infoPhoto.style.backgroundImage = `url(${park.imgURL})`;
   if (!park.status) {
-    park.activities.forEach((activity) => {
+    park.activities.sort().forEach((activity) => {
       $infoButtons?.classList.remove('hidden');
       $dateVisitedCol?.classList.add('hidden');
       $dateToVisitCol?.classList.add('hidden');
@@ -228,7 +282,7 @@ function populateInfo(park) {
     $dateVisited.textContent = `${park.datesVisitedStart} - ${park.datesVisitedEnd}`;
     $activityTitle.textContent = 'Activities Done';
     if (park.activities) {
-      park.activitiesDone.forEach((activity) => {
+      park.activitiesDone.sort().forEach((activity) => {
         const $tr = document.createElement('tr');
         const $td = document.createElement('td');
         $td.textContent = activity;
@@ -242,7 +296,7 @@ function populateInfo(park) {
     $dateToVisit.textContent = `${park.datesToVisitStart} - ${park.datesToVisitEnd}`;
     $activityTitle.textContent = 'Activities To Do';
     if (park.activitiesToDo) {
-      park.activitiesToDo.forEach((activity) => {
+      park.activitiesToDo.sort().forEach((activity) => {
         const $tr = document.createElement('tr');
         const $td = document.createElement('td');
         $td.textContent = activity;
@@ -257,11 +311,19 @@ function populateInfo(park) {
       $infoActivities.appendChild($tr);
     }
     if (park.eventsToDo) {
-      park.eventsToDo.forEach((activity) => {
+      park.eventsToDo.forEach((eventArr) => {
         const $tr = document.createElement('tr');
-        const $td = document.createElement('td');
-        $td.textContent = activity;
-        $tr.appendChild($td);
+        const $tdDate = document.createElement('td');
+        const $tdEvent = document.createElement('td');
+        const $tdLocation = document.createElement('td');
+        $tdDate.textContent = new Date(
+          eventArr[0].replace(/-/g, '/'),
+        ).toDateString();
+        $tdEvent.textContent = eventArr[1];
+        $tdLocation.textContent = eventArr[2];
+        $tr.appendChild($tdDate);
+        $tr.appendChild($tdEvent);
+        $tr.appendChild($tdLocation);
         $infoEvents.appendChild($tr);
       });
     } else {
@@ -289,7 +351,7 @@ $infoButtons.addEventListener('click', (event) => {
     currentStatus = 'visited';
     viewSwap('visit-form');
     $activitySelect.textContent = '';
-    currentPark.activities.forEach((activity) => {
+    currentPark.activities.sort().forEach((activity) => {
       const $activityOption = document.createElement('option');
       $activityOption.setAttribute('value', `${activity.replace(/\s/g, '')}`);
       $activityOption.textContent = activity;
@@ -299,7 +361,7 @@ $infoButtons.addEventListener('click', (event) => {
     currentStatus = 'wishlist';
     viewSwap('wishlist-form');
     $activitySelect.textContent = '';
-    currentPark.activities.forEach((activity) => {
+    currentPark.activities.sort().forEach((activity) => {
       const $activityOption = document.createElement('option');
       $activityOption.setAttribute('value', `${activity.replace(/\s/g, '')}`);
       $activityOption.textContent = activity;
@@ -320,8 +382,12 @@ $form?.addEventListener('submit', (event) => {
     } else {
       data.parkCount++;
     }
-    data.parks[currentIndex].datesVisitedStart = $formElements.tripStart.value;
-    data.parks[currentIndex].datesVisitedEnd = $formElements.tripEnd.value;
+    data.parks[currentIndex].datesVisitedStart = new Date(
+      $formElements.tripStart.value.replace(/-/g, '/'),
+    ).toDateString();
+    data.parks[currentIndex].datesVisitedEnd = new Date(
+      $formElements.tripEnd.value.replace(/-/g, '/'),
+    ).toDateString();
     if ($formElements.activities?.value) {
       const optionsArray = $formElements.activities.selectedOptions;
       data.parks[currentIndex].activitiesDone = [];
@@ -331,8 +397,12 @@ $form?.addEventListener('submit', (event) => {
     }
     viewSwap('journal-list');
   } else if (currentStatus === 'wishlist') {
-    data.parks[currentIndex].datesToVisitStart = $formElements.tripStart.value;
-    data.parks[currentIndex].datesToVisitEnd = $formElements.tripEnd.value;
+    data.parks[currentIndex].datesToVisitStart = new Date(
+      $formElements.tripStart.value.replace(/-/g, '/'),
+    ).toDateString();
+    data.parks[currentIndex].datesToVisitEnd = new Date(
+      $formElements.tripEnd.value.replace(/-/g, '/'),
+    ).toDateString();
     if ($formElements.activities?.value) {
       const optionsArray = $formElements.activities.selectedOptions;
       data.parks[currentIndex].activitiesToDo = [];
@@ -344,7 +414,9 @@ $form?.addEventListener('submit', (event) => {
       const optionsArray = $formElements.events.selectedOptions;
       data.parks[currentIndex].eventsToDo = [];
       for (const option of optionsArray) {
-        data.parks[currentIndex].eventsToDo.push(option.textContent);
+        data.parks[currentIndex].eventsToDo.push(
+          option.textContent.split(' - '),
+        );
       }
     }
     viewSwap('wishlist-list');
@@ -363,6 +435,17 @@ $visitedHeaderButton?.addEventListener('click', () => {
   viewSwap('journal-list');
 });
 $wishlistHeaderButton?.addEventListener('click', () => {
+  viewSwap('wishlist-list');
+});
+$headerMoreButton?.addEventListener('click', () => {
+  $headerMoreVisitedButton?.classList.toggle('hidden');
+  $headerMoreWishlistButton?.classList.toggle('hidden');
+  $headerMoreButton?.classList.toggle('on');
+});
+$headerMoreVisitedButton?.addEventListener('click', () => {
+  viewSwap('journal-list');
+});
+$headerMoreWishlistButton?.addEventListener('click', () => {
   viewSwap('wishlist-list');
 });
 $dateStartInput?.addEventListener('input', (event) => {
@@ -405,3 +488,38 @@ async function getEventsData(start, end, code) {
     console.error(e);
   }
 }
+$headerSearchButton?.addEventListener('click', () => {
+  if ($searchBar?.classList.contains('hidden')) {
+    $searchBar.classList.remove('hidden');
+  } else {
+    const $searchQuery = $searchBarInput.value;
+    currentPark = data.parks.find((park, index) => {
+      currentIndex = index;
+      return park.fullName === $searchQuery;
+    });
+    populateInfo(currentPark);
+    viewSwap('info');
+    $searchBar.classList.add('hidden');
+  }
+});
+$stateSelect.addEventListener('input', () => {
+  const selectedState = $stateSelect.value;
+  let filteredList = [];
+  if ($listViewTitle.textContent === 'Travel Plans') {
+    filteredList = wishlistParks.filter((park) =>
+      park.states.includes(selectedState),
+    );
+    $listViewTitle.textContent = `${selectedState} Travel Plans`;
+  } else if ($listViewTitle.textContent === 'All National Parks') {
+    filteredList = data.parks.filter((park) =>
+      park.states.includes(selectedState),
+    );
+    $listViewTitle.textContent = `${selectedState} National Parks`;
+  } else if ($listViewTitle.textContent === 'Park Journal') {
+    filteredList = visitedParks.filter((park) =>
+      park.states.includes(selectedState),
+    );
+    $listViewTitle.textContent = `Park Journal - ${selectedState}`;
+  }
+  displayList(filteredList);
+});
