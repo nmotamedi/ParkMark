@@ -352,3 +352,8 @@ option {
 .empty-park {
   justify-content: center;
 }
+
+#activities:not(:focus) option:checked,
+#events:not(:focus) option:checked {
+  background-color: rgb(132, 173, 137);
+}
