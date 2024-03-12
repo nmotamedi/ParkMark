@@ -447,3 +447,7 @@ select:hover {
 .modal-delete-buttons {
   justify-content: space-around;
 }
+
+.outdated {
+  background-color: #ff76763c;
+}
