@@ -183,7 +183,7 @@ div.scrollmenu {
 }
 
 .list-item h5 {
-  font-size: 1 rem;
+  font-size: 1rem;
 }
 
 .photo-info-row {
@@ -314,12 +314,22 @@ p {
 .submit-row {
   margin-top: 5rem;
   align-self: flex-end;
+  width: 100%;
+}
+
+.delete-anchor {
+  color: rgb(177, 0, 0);
+  text-decoration: underline;
 }
 
 .row.list-title-row {
   width: 80%;
   align-items: flex-end;
   margin-bottom: 2rem;
+}
+
+.delete-modal h2 {
+  color: rgb(255, 255, 255);
 }
 
 .row.list-title-row h2 {
@@ -380,10 +390,6 @@ option {
   justify-content: center;
 }
 
-footer {
-  margin-left: 1rem;
-}
-
 .header-more-button {
   display: none;
 }
@@ -408,7 +414,7 @@ select:hover {
   cursor: pointer;
 }
 
-dialog {
+.loading-dialog {
   background-color: #292929d4;
   width: 100%;
   height: 100%;
@@ -428,4 +434,16 @@ dialog {
   align-items: center;
   display: flex;
   height: 100vh;
+}
+
+.delete-modal {
+  background-color: #6c757d;
+}
+
+.delete-modal .row {
+  margin: 1rem;
+}
+
+.modal-delete-buttons {
+  justify-content: space-around;
 }

@@ -61,7 +61,6 @@
           </div>
         </div>
       </div>
-      <footer>Images provided by Unsplash</footer>
     </div>
     <section class="main hidden">
       <header>
@@ -136,7 +135,10 @@
                 <button>
                   <i class="fa-solid fa-book-open"></i>Add to Journal
                 </button>
-                <button>
+                <button class="edit-plan-button hidden">
+                  <i class="fa-solid fa-pencil"></i>Edit Travel Plan
+                </button>
+                <button class="travel-plan-button">
                   <i class="fa-solid fa-pencil"></i>Add Travel Plan
                 </button>
               </div>
@@ -195,6 +197,7 @@
                     </div>
                   </div>
                   <div class="row submit-row">
+                    <a class="delete-anchor hidden">Delete</a>
                     <button type="submit" id="form-submit">SUBMIT</button>
                   </div>
                 </div>
@@ -283,10 +286,19 @@
         </div>
       </main>
     </section>
-    <dialog>
+    <dialog class="loading-dialog">
       <div class="dialog-container">
         <h1>Events Loading...</h1>
         <i class="fa-solid fa-spinner"></i>
+      </div>
+    </dialog>
+    <dialog class="delete-modal">
+      <div class="row">
+        <h2>Are you sure you want to delete your travel plans?</h2>
+      </div>
+      <div class="row modal-delete-buttons">
+        <button class="delete-button">Yes, delete</button>
+        <button class="cancel-button">No, cancel</button>
       </div>
     </dialog>
     <script src="js/data.js"></script>

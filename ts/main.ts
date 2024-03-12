@@ -67,11 +67,17 @@ const $headerMoreVisitedButton = document.querySelector(
 const $headerMoreWishlistButton = document.querySelector(
   '.header-more-wishlist-button',
 );
-const $modal = document.querySelector('dialog');
+const $modal = document.querySelector('.loading-dialog') as HTMLDialogElement;
+const $travelPlanButton = document.querySelector('.travel-plan-button');
+const $editPlanButton = document.querySelector('.edit-plan-button');
+const $deleteAnchor = document.querySelector('.delete-anchor');
+const $deleteModal = document.querySelector(
+  '.delete-modal',
+) as HTMLDialogElement;
+const $cancelButton = document.querySelector('.cancel-button');
+const $deleteButton = document.querySelector('.delete-button');
 
 const today: string[] = new Date().toISOString().split('T');
-$dateStartInput?.setAttribute('max', today[0]);
-$dateEndInput?.setAttribute('max', today[0]);
 
 let startDate: string | undefined;
 let currentPark: NationalPark | undefined;
@@ -202,9 +208,10 @@ $heroButtonRow.addEventListener('click', (event: Event) => {
 
 function viewSwap(view: string): void {
   $form.reset();
+  $deleteAnchor?.classList.add('hidden');
   $searchBarInput.value = '';
   $searchBar?.classList.add('hidden');
-  $dateEndInput?.removeAttribute('min');
+  $dateStartInput?.removeAttribute('value');
   $dateEndInput?.removeAttribute('value');
   startDate = undefined;
   if (
@@ -286,6 +293,8 @@ function populateInfo(park: NationalPark): void {
   $infoEventsDiv?.classList.add('hidden');
   $infoActivities!.textContent = '';
   $infoEvents!.textContent = '';
+  $travelPlanButton?.classList.remove('hidden');
+  $editPlanButton?.classList.add('hidden');
   const x = longToX(park.longitude);
   const y = latToY(park.latitude);
   const URL = `https://hikingproject.com/widget/map?favs=1&location=fixed&x=${x}&y=${y}&z=9&h=400`;
@@ -328,6 +337,7 @@ function populateInfo(park: NationalPark): void {
     }
     $infoButtons?.classList.add('hidden');
     $dateVisitedCol?.classList.remove('hidden');
+    $dateToVisitCol?.classList.add('hidden');
   } else if (park.status === 'wishlist') {
     $dateToVisit!.textContent = `${park.datesToVisitStart} - ${park.datesToVisitEnd}`;
     $activityTitle!.textContent = 'Activities To Do';
@@ -369,9 +379,11 @@ function populateInfo(park: NationalPark): void {
       $tr.appendChild($td);
       $infoEvents!.appendChild($tr);
     }
-    $infoButtons?.classList.add('hidden');
+    $travelPlanButton?.classList.add('hidden');
+    $editPlanButton?.classList.remove('hidden');
     $dateToVisitCol?.classList.remove('hidden');
     $infoEventsDiv?.classList.remove('hidden');
+    $dateVisitedCol?.classList.add('hidden');
   }
 }
 
@@ -406,7 +418,61 @@ $infoButtons.addEventListener('click', (event: Event) => {
       $activityOption.textContent = activity;
       $activitySelect?.appendChild($activityOption);
     });
+  } else if (buttonText === 'Edit Travel Plan') {
+    currentStatus = 'wishlist';
+    viewSwap('wishlist-form');
+    $activitySelect!.textContent = '';
+    $deleteAnchor?.classList.remove('hidden');
+    currentPark!.activities.sort().forEach((activity: string) => {
+      const $activityOption = document.createElement('option');
+      $activityOption.setAttribute('value', `${activity.replace(/\s/g, '')}`);
+      if (currentPark!.activitiesToDo?.includes(activity)) {
+        $activityOption.selected = true;
+      }
+      $activityOption.textContent = activity;
+      $activitySelect?.appendChild($activityOption);
+    });
+    $dateStartInput!.setAttribute(
+      'value',
+      new Date(currentPark!.datesToVisitStart!).toISOString().split('T')[0],
+    );
+    $dateEndInput!.setAttribute(
+      'value',
+      new Date(currentPark!.datesToVisitEnd!).toISOString().split('T')[0],
+    );
+    if (
+      !currentPark?.datesToVisitStart ||
+      !currentPark?.datesToVisitEnd ||
+      !currentPark?.parkCode
+    )
+      throw new Error('Unable to run function.');
+    getEventsData(
+      currentPark?.datesToVisitStart,
+      currentPark?.datesToVisitEnd,
+      currentPark.parkCode,
+    );
   }
+});
+
+$deleteAnchor?.addEventListener('click', () => {
+  $deleteModal.showModal();
+});
+
+$cancelButton?.addEventListener('click', () => {
+  $deleteModal.close();
+});
+
+$deleteButton?.addEventListener('click', () => {
+  data.parks[currentIndex].status = undefined;
+  data.parks[currentIndex].activitiesToDo = undefined;
+  data.parks[currentIndex].eventsToDo = undefined;
+  data.parks[currentIndex].datesToVisitStart = undefined;
+  data.parks[currentIndex].datesToVisitEnd = undefined;
+  wishlistParks = data.parks.filter(
+    (park: NationalPark) => park.status === 'wishlist',
+  );
+  viewSwap('main-list');
+  $deleteModal.close();
 });
 
 $form?.addEventListener('submit', (event: Event) => {
@@ -546,6 +612,15 @@ async function getEventsData(
       eventsArr.forEach((events: Events) => {
         const $eventOption = document.createElement('option');
         $eventOption.textContent = `${events.date} - ${events.title} - ${events.location}`;
+        if (currentPark?.eventsToDo) {
+          if (
+            JSON.stringify(currentPark.eventsToDo).includes(
+              JSON.stringify($eventOption.textContent.split(' - ')),
+            )
+          ) {
+            $eventOption.selected = true;
+          }
+        }
         $eventSelect?.appendChild($eventOption);
       });
     }
