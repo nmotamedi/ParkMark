@@ -406,6 +406,7 @@ $infoButtons.addEventListener('click', (event) => {
       !currentPark?.parkCode
     )
       throw new Error('Unable to run function.');
+    $modal?.showModal();
     getEventsData(
       currentPark?.datesToVisitStart,
       currentPark?.datesToVisitEnd,
@@ -517,10 +518,12 @@ $dateStartInput?.addEventListener('input', (event) => {
 $dateEndInput?.addEventListener('input', (eventEnd) => {
   const eventEndTarget = eventEnd.target;
   const endDate = eventEndTarget.value;
-  $modal?.showModal();
-  if (!startDate || !currentPark || !currentPark?.parkCode)
-    throw new Error('Unable to run function.');
-  getEventsData(startDate, endDate, currentPark.parkCode);
+  if (currentStatus === 'wishlist') {
+    $modal?.showModal();
+    if (!startDate || !currentPark || !currentPark?.parkCode)
+      throw new Error('Unable to run function.');
+    getEventsData(startDate, endDate, currentPark.parkCode);
+  }
 });
 async function getEventsData(start, end, code) {
   try {
