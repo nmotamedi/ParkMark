@@ -142,6 +142,12 @@ function createParkListItem(parkData: NationalPark): HTMLDivElement {
     $icon.classList.add('fa-solid', 'fa-book-open');
   } else if (parkData.status === 'wishlist') {
     $icon.classList.add('fa-solid', 'fa-pencil');
+    if (
+      today[0] <
+      new Date(parkData.datesToVisitStart!).toISOString().split('T')[0]
+    ) {
+      $divWrapper.classList.add('outdated');
+    }
   }
   $colDiv.appendChild($icon);
   $stateH5.textContent = parkData.states.join(', ');
@@ -340,6 +346,11 @@ function populateInfo(park: NationalPark): void {
     $dateToVisitCol?.classList.add('hidden');
   } else if (park.status === 'wishlist') {
     $dateToVisit!.textContent = `${park.datesToVisitStart} - ${park.datesToVisitEnd}`;
+    if (
+      today[0] < new Date(park.datesToVisitStart!).toISOString().split('T')[0]
+    ) {
+      $dateToVisit!.textContent = `Planned dates have passed`;
+    }
     $activityTitle!.textContent = 'Activities To Do';
     if (park.activitiesToDo) {
       park.activitiesToDo!.sort().forEach((activity: string) => {
