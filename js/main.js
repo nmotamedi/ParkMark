@@ -114,7 +114,7 @@ function createParkListItem(parkData) {
   } else if (parkData.status === 'wishlist') {
     $icon.classList.add('fa-solid', 'fa-pencil');
     if (
-      today[0] <
+      today[0] >
       new Date(parkData.datesToVisitStart).toISOString().split('T')[0]
     ) {
       $divWrapper.classList.add('outdated');
@@ -310,7 +310,7 @@ function populateInfo(park) {
   } else if (park.status === 'wishlist') {
     $dateToVisit.textContent = `${park.datesToVisitStart} - ${park.datesToVisitEnd}`;
     if (
-      today[0] < new Date(park.datesToVisitStart).toISOString().split('T')[0]
+      today[0] > new Date(park.datesToVisitStart).toISOString().split('T')[0]
     ) {
       $dateToVisit.textContent = `Planned dates have passed`;
     }
