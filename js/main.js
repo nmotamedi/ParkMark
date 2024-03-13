@@ -56,6 +56,14 @@ const $deleteAnchor = document.querySelector('.delete-anchor');
 const $deleteModal = document.querySelector('.delete-modal');
 const $cancelButton = document.querySelector('.cancel-button');
 const $deleteButton = document.querySelector('.delete-button');
+const $arrivalSelect = document.querySelector('#arrival-select');
+const $departureSelect = document.querySelector('#departure-select');
+const $departingCityInput = document.querySelector('#departing-city');
+const $flightSearchButton = document.querySelector('#flight-search-button');
+const $flightsForm = document.querySelector('.flights-form');
+const $flightsInfo = document.querySelector('.flights-info');
+const $arrivalFlightH5 = document.querySelector('.arrival-flight');
+const $departureFlightH5 = document.querySelector('.departure-flight');
 const today = new Date().toISOString().split('T');
 let startDate;
 let currentPark;
@@ -225,6 +233,9 @@ function viewSwap(view) {
     $sectionForm?.classList.remove('hidden');
     if (view === 'wishlist-form') {
       $eventsForm?.classList.remove('hidden');
+      $departureSelect.textContent = '';
+      $arrivalSelect.textContent = '';
+      $flightsForm?.classList.remove('hidden');
       $activityFormTitle.textContent = 'Activities To Do';
       $dateTitle.textContent = 'Dates To Visit';
       $hikeTitle.textContent = 'Hikes To Do';
@@ -233,6 +244,9 @@ function viewSwap(view) {
       $dateStartInput?.removeAttribute('max');
       $dateEndInput?.removeAttribute('max');
       $eventSelect.textContent = '';
+      if (data.defaultLocation) {
+        $departingCityInput.value = data.defaultLocation;
+      }
     } else if (view === 'visit-form') {
       $activityFormTitle.textContent = 'Activities Done';
       $dateTitle.textContent = 'Dates Visited';
@@ -242,6 +256,7 @@ function viewSwap(view) {
       $dateStartInput?.removeAttribute('min');
       $dateEndInput?.removeAttribute('min');
       $eventsForm?.classList.add('hidden');
+      $flightsForm?.classList.add('hidden');
     }
   }
 }
@@ -262,6 +277,7 @@ function populateInfo(park) {
   $activityTitle.textContent = 'Activities';
   $infoParkDescription.textContent = park.description;
   $infoEventsDiv?.classList.add('hidden');
+  $flightsInfo?.classList.add('hidden');
   $infoActivities.textContent = '';
   $infoEvents.textContent = '';
   $travelPlanButton?.classList.remove('hidden');
@@ -353,10 +369,21 @@ function populateInfo(park) {
       $tr.appendChild($td);
       $infoEvents.appendChild($tr);
     }
+    if (park.arrivalFlight) {
+      $arrivalFlightH5.textContent = park.arrivalFlight;
+    } else {
+      $arrivalFlightH5.textContent = 'No Flight Selected';
+    }
+    if (park.departureFlight) {
+      $departureFlightH5.textContent = park.departureFlight;
+    } else {
+      $departureFlightH5.textContent = 'No Flight Selected';
+    }
     $travelPlanButton?.classList.add('hidden');
     $editPlanButton?.classList.remove('hidden');
     $dateToVisitCol?.classList.remove('hidden');
     $infoEventsDiv?.classList.remove('hidden');
+    $flightsInfo?.classList.remove('hidden');
     $dateVisitedCol?.classList.add('hidden');
   }
 }
@@ -414,14 +441,21 @@ $infoButtons.addEventListener('click', (event) => {
     if (
       !currentPark?.datesToVisitStart ||
       !currentPark?.datesToVisitEnd ||
-      !currentPark?.parkCode
+      !currentPark?.parkCode ||
+      !currentPark?.baseLocation
     )
       throw new Error('Unable to run function.');
     $modal?.showModal();
     getEventsData(
-      currentPark?.datesToVisitStart,
-      currentPark?.datesToVisitEnd,
+      currentPark.datesToVisitStart,
+      currentPark.datesToVisitEnd,
       currentPark.parkCode,
+    );
+    fetchAirport(
+      currentPark,
+      new Date(currentPark.datesToVisitStart).toISOString().split('T')[0],
+      new Date(currentPark.datesToVisitEnd).toISOString().split('T')[0],
+      currentPark.baseLocation,
     );
   }
 });
@@ -475,6 +509,29 @@ $form?.addEventListener('submit', (event) => {
     data.parks[currentIndex].datesToVisitEnd = new Date(
       $formElements.tripEnd.value.replace(/-/g, '/'),
     ).toDateString();
+    if (
+      $formElements['departure-select']?.value ===
+      'No Flights Found For Current Date'
+    ) {
+      data.parks[currentIndex].departureFlight = undefined;
+    } else {
+      data.parks[currentIndex].departureFlight =
+        $formElements['departure-select']?.value;
+    }
+    if (
+      $formElements['arrival-select']?.value ===
+      'No Flights Found For Current Date'
+    ) {
+      data.parks[currentIndex].arrivalFlight = undefined;
+    } else {
+      data.parks[currentIndex].arrivalFlight =
+        $formElements['arrival-select']?.value;
+    }
+    data.parks[currentIndex].baseLocation =
+      $formElements['departing-city']?.value;
+    if (!data.defaultLocation) {
+      data.defaultLocation = $formElements['departing-city']?.value;
+    }
     if ($formElements.activities?.value) {
       const optionsArray = $formElements.activities.selectedOptions;
       data.parks[currentIndex].activitiesToDo = [];
@@ -613,4 +670,132 @@ $stateSelect.addEventListener('input', () => {
     $listViewTitle.textContent = `Park Journal - ${selectedState}`;
   }
   displayList(filteredList);
+});
+async function fetchAirport(park, dateStart, dateEnd, defaultLocation) {
+  const airportRadiusURL = `https://api.tequila.kiwi.com/locations/radius?lat=${park.latitude}&lon=${park.longitude}&radius=400&locale=en-US&location_types=airport&limit=5&active_only=true`;
+  const airportLocationURL = `https://api.tequila.kiwi.com/locations/query?term=${defaultLocation}&locale=en-US&location_types=airport&limit=1&active_only=true`;
+  const airportHeader = {
+    apikey: '2Q_NuNwGtLTXtRntdfeA2YJfOFTognUE',
+    accept: 'application/json',
+  };
+  const parksAirports = [];
+  try {
+    const parkAirportsResp = await fetch(airportRadiusURL, {
+      headers: airportHeader,
+    });
+    if (!parkAirportsResp.ok) throw new Error('Network failure');
+    const parkAirportsJSON = await parkAirportsResp.json();
+    parkAirportsJSON.locations.forEach((location) => {
+      parksAirports.push(location.code);
+    });
+    const defaultAirportResp = await fetch(airportLocationURL, {
+      headers: airportHeader,
+    });
+    if (!defaultAirportResp.ok) throw new Error('Network failure');
+    const defaultAirportJSON = await defaultAirportResp.json();
+    const defaultAirport = defaultAirportJSON.locations[0].code;
+    const arrivalFlights = await fetchFlights(
+      dateStart,
+      defaultAirport,
+      parksAirports,
+    );
+    const departureFlights = await fetchFlights(
+      dateEnd,
+      parksAirports,
+      defaultAirport,
+    );
+    if (arrivalFlights) {
+      if (arrivalFlights.length > 1) {
+        arrivalFlights.forEach((flight) => {
+          const $flightOption = document.createElement('option');
+          $flightOption.textContent = `${flight.local_departure.split('T')[0]} ${flight.cityFrom}-${flight.local_departure.split('T')[1]} -- ${flight.cityTo}-${flight.local_arrival.split('T')[1]} -- ${flight.airline}${flight.flight_no} -- $${flight.price}`;
+          $arrivalSelect?.appendChild($flightOption);
+        });
+      } else {
+        const $flightOption = document.createElement('option');
+        $flightOption.textContent = 'No Flights Found For Current Date';
+        $arrivalSelect?.appendChild($flightOption);
+      }
+    } else {
+      const $flightOption = document.createElement('option');
+      $flightOption.textContent = 'No Flights Found For Current Date';
+      $arrivalSelect?.appendChild($flightOption);
+    }
+    if (departureFlights) {
+      if (departureFlights.length > 1) {
+        departureFlights.forEach((flight) => {
+          const $flightOption = document.createElement('option');
+          $flightOption.textContent = `${flight.local_departure.split('T')[0]} ${flight.cityFrom}-${flight.local_departure.split('T')[1]} -- ${flight.cityTo}-${flight.local_arrival.split('T')[1]} -- ${flight.airline}${flight.flight_no} -- $${flight.price}`;
+          $departureSelect?.appendChild($flightOption);
+        });
+      } else {
+        const $flightOption = document.createElement('option');
+        $flightOption.textContent = 'No Flights Found For Current Date';
+        $arrivalSelect?.appendChild($flightOption);
+      }
+    } else {
+      const $flightOption = document.createElement('option');
+      $flightOption.textContent = 'No Flights Found For Current Date';
+      $arrivalSelect?.appendChild($flightOption);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+async function fetchFlights(travelDate, departureAirports, arrivalAirports) {
+  let departure = '';
+  let arrival = '';
+  if (typeof departureAirports === 'string') {
+    departure = departureAirports;
+  } else {
+    departure = departureAirports.join('%2C%20');
+  }
+  if (typeof arrivalAirports === 'string') {
+    arrival = arrivalAirports;
+  } else {
+    arrival = arrivalAirports.join('%2C%20');
+  }
+  const dateArray = travelDate.split('-');
+  const formattedDate = `${dateArray[2]}%2F${dateArray[1]}%2F${dateArray[0]}`;
+  const flightsURL = `https://api.tequila.kiwi.com/v2/search?fly_from=${departure}&fly_to=${arrival}&date_from=${formattedDate}&date_to=${formattedDate}&ret_from_diff_city=true&ret_to_diff_city=true&one_for_city=0&one_per_date=0&adults=1&children=0&selected_cabins=M&adult_hold_bag=1&adult_hand_bag=1&only_working_days=false&only_weekends=false&partner_market=us&curr=USD&locale=us&max_stopovers=1&vehicle_type=aircraft&limit=20`;
+  const flightsHeader = {
+    apikey: '2Q_NuNwGtLTXtRntdfeA2YJfOFTognUE',
+    accept: 'application/json',
+  };
+  const flightsArr = [];
+  try {
+    const fetchFlightsResp = await fetch(flightsURL, {
+      headers: flightsHeader,
+    });
+    if (!fetchFlightsResp.ok) throw new Error('Network failure');
+    const flightsJSON = await fetchFlightsResp.json();
+    flightsJSON.data.forEach((flight) => {
+      if (flight.availability.seats !== null) {
+        const flightInfo = {
+          cityFrom: flight.cityFrom,
+          cityTo: flight.cityTo,
+          local_arrival: flight['local_arrival'],
+          local_departure: flight['local_departure'],
+          price: flight.price,
+          flight_no: flight['flight_no'],
+          airline: flight.airline,
+        };
+        flightsArr.push(flightInfo);
+      }
+    });
+    return flightsArr;
+  } catch (E) {
+    console.error(E);
+  }
+}
+$flightSearchButton?.addEventListener('click', () => {
+  if (!currentPark) {
+    return;
+  }
+  fetchAirport(
+    currentPark,
+    $dateStartInput.value,
+    $dateEndInput.value,
+    $departingCityInput.value,
+  );
 });

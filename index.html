@@ -197,16 +197,19 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="column-full flights-form hidden">
+                    <div class="column-full activities flights-form hidden">
                       <h3>Flights</h3>
                       <input
                         type="text"
                         name="departing-city"
                         id="departing-city"
                         placeholder="Departing Location" />
+                      <a id="flight-search-button">Search Flights</a>
+                      <h4>Arrival Options</h4>
                       <select
                         name="arrival-select"
                         id="arrival-select"></select>
+                      <h4>Departure Options</h4>
                       <select
                         name="departure-select"
                         id="departure-select"></select>
@@ -282,12 +285,12 @@
                   </tbody>
                 </table>
                 <div class="row">
-                  <div class="column-full flights-info hidden">
+                  <div class="column-full activities flights-info hidden">
                     <h3>Flights</h3>
                     <h4>Arrival</h4>
                     <h5 class="arrival-flight">Flight-option</h5>
                     <h4>Departure</h4>
-                    <h5 class="Departure-flight">Flight-option</h5>
+                    <h5 class="departure-flight">Flight-option</h5>
                   </div>
                 </div>
               </div>
@@ -313,7 +316,7 @@
     </section>
     <dialog class="loading-dialog">
       <div class="dialog-container">
-        <h1>Events Loading...</h1>
+        <h1>Loading...</h1>
         <i class="fa-solid fa-spinner"></i>
       </div>
     </dialog>
