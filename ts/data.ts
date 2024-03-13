@@ -15,6 +15,9 @@ interface NationalPark {
   datesVisitedEnd?: string;
   datesToVisitStart?: string;
   datesToVisitEnd?: string;
+  departureFlight?: string;
+  arrivalFlight?: string;
+  baseLocation?: string;
   latitude: number;
   longitude: number;
 }
@@ -40,6 +43,7 @@ interface Park {
 let data: {
   parkCount: number;
   parks: NationalPark[];
+  defaultLocation?: string;
 } = {
   parkCount: 0,
   parks: [],
