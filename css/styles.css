@@ -11,7 +11,8 @@ h5,
 h6,
 td,
 button,
-footer {
+footer,
+a {
   font-family: roboto, sans-serif;
   font-weight: 100;
   margin: 0;
@@ -252,6 +253,10 @@ tr:nth-child(even) {
   text-align: center;
 }
 
+div.flights-info h5 {
+  font-size: 1.2rem;
+}
+
 .scrollmenu .row h5 {
   margin: 0;
 }
@@ -450,4 +455,40 @@ select:hover {
 
 .outdated {
   background-color: #ff76763c;
+}
+
+.flights-info h4 {
+  font-size: 2rem;
+  margin-top: 1rem;
+}
+
+.column-full.activities.flights-form {
+  align-items: center;
+}
+
+.flights-form h4 {
+  align-self: flex-start;
+}
+
+.flights-form select {
+  width: 90%;
+  margin-bottom: 1rem;
+}
+
+.flights-form .row {
+  margin-top: 0.5rem;
+}
+
+.flights-form input {
+  width: 50%;
+}
+
+.flights-form a {
+  width: 30%;
+  background-color: #597457;
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 6px;
+  color: rgb(204, 204, 204);
+  font-size: 0.75rem;
 }

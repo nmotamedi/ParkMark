@@ -24,8 +24,12 @@ interface Flights {
   local_arrival: string;
   local_departure: string;
   price: number;
+  route?: {
+    airline: string;
+    flight_no: string;
+  }[];
   airline: string;
-  flight_no: number;
+  flight_no: string;
   availability?: {
     seats: number | null;
   };
@@ -259,6 +263,8 @@ function viewSwap(view: string): void {
     view === 'journal-list' ||
     view === 'wishlist-list'
   ) {
+    $departureSelect.textContent = '';
+    $arrivalSelect.textContent = '';
     currentIndex = 1000;
     currentStatus = undefined;
     currentPark = undefined;
@@ -292,8 +298,6 @@ function viewSwap(view: string): void {
     $sectionForm?.classList.remove('hidden');
     if (view === 'wishlist-form') {
       $eventsForm?.classList.remove('hidden');
-      $departureSelect.textContent = '';
-      $arrivalSelect.textContent = '';
       $flightsForm?.classList.remove('hidden');
       $activityFormTitle!.textContent = 'Activities To Do';
       $dateTitle!.textContent = 'Dates To Visit';
@@ -303,7 +307,9 @@ function viewSwap(view: string): void {
       $dateStartInput?.removeAttribute('max');
       $dateEndInput?.removeAttribute('max');
       $eventSelect!.textContent = '';
-      if (data.defaultLocation) {
+      if (currentPark?.baseLocation) {
+        $departingCityInput.value = currentPark.baseLocation;
+      } else if (data.defaultLocation) {
         $departingCityInput.value = data.defaultLocation;
       }
     } else if (view === 'visit-form') {
@@ -517,6 +523,7 @@ $infoButtons.addEventListener('click', (event: Event) => {
       currentPark.datesToVisitEnd,
       currentPark.parkCode,
     );
+    $modal?.showModal();
     fetchAirport(
       currentPark,
       new Date(currentPark.datesToVisitStart).toISOString().split('T')[0],
@@ -540,6 +547,9 @@ $deleteButton?.addEventListener('click', () => {
   data.parks[currentIndex].eventsToDo = undefined;
   data.parks[currentIndex].datesToVisitStart = undefined;
   data.parks[currentIndex].datesToVisitEnd = undefined;
+  data.parks[currentIndex].arrivalFlight = undefined;
+  data.parks[currentIndex].departureFlight = undefined;
+  data.parks[currentIndex].baseLocation = undefined;
   wishlistParks = data.parks.filter(
     (park: NationalPark) => park.status === 'wishlist',
   );
@@ -777,6 +787,9 @@ async function fetchAirport(
     accept: 'application/json',
   };
   const parksAirports: string[] = [];
+  $modal?.showModal();
+  $departureSelect.textContent = '';
+  $arrivalSelect.textContent = '';
 
   try {
     const parkAirportsResp = await fetch(airportRadiusURL, {
@@ -807,7 +820,7 @@ async function fetchAirport(
       if (arrivalFlights.length > 1) {
         arrivalFlights.forEach((flight: Flights) => {
           const $flightOption = document.createElement('option');
-          $flightOption.textContent = `${flight.local_departure.split('T')[0]} ${flight.cityFrom}-${flight.local_departure.split('T')[1]} -- ${flight.cityTo}-${flight.local_arrival.split('T')[1]} -- ${flight.airline}${flight.flight_no} -- $${flight.price}`;
+          $flightOption.textContent = `${flight.local_departure.split('T')[0]} ${flight.cityFrom}-${flight.cityTo} -- ${flight.local_departure.split('T')[1]}-${flight.local_arrival.split('T')[1]} -- $${flight.price}`;
           $arrivalSelect?.appendChild($flightOption);
         });
       } else {
@@ -824,19 +837,20 @@ async function fetchAirport(
       if (departureFlights.length > 1) {
         departureFlights.forEach((flight: Flights) => {
           const $flightOption = document.createElement('option');
-          $flightOption.textContent = `${flight.local_departure.split('T')[0]} ${flight.cityFrom}-${flight.local_departure.split('T')[1]} -- ${flight.cityTo}-${flight.local_arrival.split('T')[1]} -- ${flight.airline}${flight.flight_no} -- $${flight.price}`;
+          $flightOption.textContent = `${flight.local_departure.split('T')[0]} ${flight.cityFrom}-${flight.cityTo} -- ${flight.local_departure.split('T')[1]}-${flight.local_arrival.split('T')[1]} -- $${flight.price}`;
           $departureSelect?.appendChild($flightOption);
         });
       } else {
         const $flightOption = document.createElement('option');
         $flightOption.textContent = 'No Flights Found For Current Date';
-        $arrivalSelect?.appendChild($flightOption);
+        $departureSelect?.appendChild($flightOption);
       }
     } else {
       const $flightOption = document.createElement('option');
       $flightOption.textContent = 'No Flights Found For Current Date';
-      $arrivalSelect?.appendChild($flightOption);
+      $departureSelect?.appendChild($flightOption);
     }
+    $modal?.close();
   } catch (e) {
     console.error(e);
   }
@@ -875,15 +889,15 @@ async function fetchFlights(
     if (!fetchFlightsResp.ok) throw new Error('Network failure');
     const flightsJSON = await fetchFlightsResp.json();
     flightsJSON.data.forEach((flight: Flights) => {
-      if (flight.availability!.seats !== null) {
+      if (flight.availability!.seats !== null && flight.route) {
         const flightInfo: Flights = {
           cityFrom: flight.cityFrom,
           cityTo: flight.cityTo,
-          local_arrival: flight.local_arrival,
-          local_departure: flight.local_departure,
+          local_arrival: flight.local_arrival.replace(':00.000Z', ''),
+          local_departure: flight.local_departure.replace(':00.000Z', ''),
           price: flight.price,
-          flight_no: flight.flight_no,
-          airline: flight.airline,
+          flight_no: flight.route[0].flight_no,
+          airline: flight.route[0].airline,
         };
         flightsArr.push(flightInfo);
       }
