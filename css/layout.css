@@ -26,13 +26,13 @@
   }
 
   div.hero-img-column > img {
-    border-radius: 0 0 45px 45px;
+    border-radius: 0 0 33.75px 33.75px;
   }
 
   div.hero-text-column {
     flex-basis: 100%;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding-left: 0.375rem;
+    padding-right: 0.375rem;
   }
 
   div.hero-button-row {
@@ -52,12 +52,12 @@
   }
 
   .list-item .row h3 {
-    font-size: 1.2rem;
+    font-size: 0.9rem;
   }
 
   div.activities {
     flex-basis: 100%;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
   }
 
   div.map-image {
@@ -65,7 +65,7 @@
   }
 
   .hero-text-column .row h2 {
-    font-size: 2.5rem;
+    font-size: 1.875rem;
   }
 
   .row.photo-info-row {
@@ -73,15 +73,15 @@
   }
 
   .row.photo-info-row h3 {
-    font-size: 1.5rem;
+    font-size: 1.125rem;
   }
 
   .row.list-title-row h1 {
-    font-size: 3rem;
+    font-size: 2.25rem;
   }
 
   .row.photo-info-row h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
   .list-item.row {
