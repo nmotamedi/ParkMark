@@ -1,7 +1,6 @@
 body {
   background-color: #b7b7b7;
-  margin-bottom: 3rem;
-  zoom: 75%;
+  margin-bottom: 2.25rem;
 }
 
 h4,
@@ -32,30 +31,30 @@ button {
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 0.5rem;
+  padding: 0.375rem;
 }
 
 .hero-text-column h1 {
-  font-size: 5rem;
-  padding-bottom: 2rem;
+  font-size: 3.75rem;
+  padding-bottom: 1.5rem;
 }
 
 .hero-text-column h2 {
-  font-size: 3.125rem;
-  padding-bottom: 3rem;
+  font-size: 2.344rem;
+  padding-bottom: 2.25rem;
 }
 
 .hero-text-column h4 {
-  font-size: 1.875rem;
-  padding-bottom: 2rem;
+  font-size: 1.41rem;
+  padding-bottom: 1.5rem;
 }
 
 .hero-button > button {
-  font-size: 1.21rem;
+  font-size: 0.9075rem;
 }
 
 .main-list-container h1 {
-  font-size: 3.54rem;
+  font-size: 2.655rem;
 }
 
 .row {
@@ -74,12 +73,12 @@ img {
 }
 
 .hero-img-column > img {
-  border-radius: 0 45px 45px 0;
+  border-radius: 0 33.75px 33.75px 0;
 }
 
 .hero-text-column {
   flex-basis: 60%;
-  padding-right: 3rem;
+  padding-right: 2.25rem;
 }
 
 .hero-button-row {
@@ -98,7 +97,7 @@ img {
 i,
 .header-title {
   color: #0005;
-  font-size: 2.5rem;
+  font-size: 1.875rem;
 }
 
 header {
@@ -108,12 +107,12 @@ header {
 }
 
 .hero.container {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .hero-button {
-  margin: 0.5rem;
+  margin: 0.375rem;
 }
 
 .column-half {
@@ -130,7 +129,7 @@ header {
 
 .header-title {
   margin: 0;
-  font-size: 1.75rem;
+  font-size: 1.3125rem;
 }
 
 .header-home-button,
@@ -138,23 +137,23 @@ header {
 .header-search,
 .header-visited-button,
 .header-wish-button {
-  margin: 1rem;
+  margin: 0.75rem;
 }
 
 .header-row-2 i {
-  font-size: 1rem;
-  margin-left: 3rem;
-  margin-right: 3rem;
+  font-size: 0.75rem;
+  margin-left: 2.25rem;
+  margin-right: 2.25rem;
 }
 
 .map-column {
   flex-basis: 55%;
-  padding: 3rem;
+  padding: 2.25rem;
 }
 
 .list-col {
   flex-basis: 40%;
-  margin: 2rem;
+  margin: 1.5rem;
 }
 
 div.scrollmenu {
@@ -162,36 +161,36 @@ div.scrollmenu {
   overflow: scroll;
   white-space: nowrap;
   height: fit-content;
-  max-height: 800px;
+  max-height: 600px;
 }
 
 .column-third {
-  padding: 1rem;
+  padding: 0.75rem;
 }
 
 .list-item {
-  border: 1px solid black;
+  border: 0.75px solid black;
   overflow: hidden;
-  height: 100px;
+  height: 75px;
   justify-content: space-between;
 }
 
 .list-item img {
-  width: 100px;
+  width: 75px;
 }
 
 .list-item h3 {
-  font-size: 1.5rem;
+  font-size: 1.125rem;
 }
 
 .list-item h5 {
-  font-size: 1rem;
+  font-size: 0.75rem;
 }
 
 .photo-info-row {
   align-items: flex-end;
   background-image: url('../images/NationalParks_forwiki.jpeg');
-  height: 500px;
+  height: 375px;
   background-size: 100%;
   background-position: center;
 }
@@ -199,19 +198,19 @@ div.scrollmenu {
 .col-park-name,
 .col-buttons {
   background-color: #e6e6e6a3;
-  padding: 1rem;
+  padding: 0.75rem;
 }
 
 .col-park-name {
-  border-radius: 0 6px 0 0;
+  border-radius: 0 4.5px 0 0;
 }
 
 .col-buttons {
-  border-radius: 6px 0 0;
+  border-radius: 4.5px 0 0;
 }
 
 .col-buttons button {
-  margin: 0.5rem;
+  margin: 0.375rem;
 }
 
 tr:nth-child(even) {
@@ -222,20 +221,20 @@ tr:nth-child(even) {
   justify-content: space-around;
   align-items: flex-start;
   text-align: center;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .page-activities h3,
 .events-list h3 {
-  font-size: 2.81rem;
+  font-size: 2.11rem;
 }
 
 .activities {
   flex-basis: 30%;
   display: flex;
   flex-direction: column;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.125rem;
 }
 
 .activities h3 {
@@ -243,11 +242,11 @@ tr:nth-child(even) {
 }
 
 .main-park-info h5 {
-  font-size: 1.875rem;
-  margin-top: 1rem;
+  font-size: 1.406rem;
+  margin-top: 0.75rem;
   text-align: left;
-  margin-left: 1rem;
-  margin-right: 0.35rem;
+  margin-left: 0.75rem;
+  margin-right: 0.2625rem;
 }
 
 .page-activities h5 {
@@ -255,7 +254,7 @@ tr:nth-child(even) {
 }
 
 div.flights-info h5 {
-  font-size: 1.2rem;
+  font-size: 0.9rem;
 }
 
 .scrollmenu .row h5 {
@@ -275,17 +274,17 @@ div.flights-info h5 {
 }
 
 .col-park-name > h1 {
-  font-size: 3.53rem;
+  font-size: 2.6475rem;
 }
 
 .col-park-name > h3 {
-  font-size: 2.81rem;
+  font-size: 2.11rem;
 }
 
 td {
-  font-size: 1rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  font-size: 0.75rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .column-full {
@@ -309,8 +308,8 @@ select {
 
 p {
   display: inline;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 
 .date-row {
@@ -318,7 +317,7 @@ p {
 }
 
 .submit-row {
-  margin-top: 5rem;
+  margin-top: 3.75rem;
   align-self: flex-end;
   width: 100%;
 }
@@ -331,7 +330,7 @@ p {
 .row.list-title-row {
   width: 80%;
   align-items: flex-end;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .delete-modal h2 {
@@ -339,28 +338,28 @@ p {
 }
 
 .row.list-title-row h2 {
-  font-size: 2.25rem;
+  font-size: 1.6875rem;
 }
 
 iframe {
   width: 100%;
-  max-width: 1200px;
-  height: 500px;
+  max-width: 900px;
+  height: 375px;
 }
 
 input,
 select,
 option {
   background-color: #d1d1d1;
-  border-radius: 4px;
-  border: 1px #ced4da solid;
+  border-radius: 3px;
+  border: 0.75px #ced4da solid;
   color: #6c757d;
   font-family: roboto, sans-serif;
   font-weight: 300;
 }
 
 .list-item .fa-solid {
-  font-size: 1.5rem;
+  font-size: 1.125rem;
 }
 
 #search {
@@ -406,8 +405,8 @@ option {
 
 .header-more-visited-button,
 .header-more-wishlist-button {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-top: 0.375rem;
+  margin-bottom: 0.375rem;
 }
 
 .header-home-button:hover,
@@ -424,7 +423,7 @@ select:hover {
   background-color: #292929d4;
   width: 100%;
   height: 100%;
-  border: #292929d4 5px solid;
+  border: #292929d4 3.75px solid;
   box-sizing: content-box;
 }
 
@@ -447,7 +446,7 @@ select:hover {
 }
 
 .delete-modal .row {
-  margin: 1rem;
+  margin: 0.75rem;
 }
 
 .modal-delete-buttons {
@@ -459,8 +458,8 @@ select:hover {
 }
 
 .flights-info h4 {
-  font-size: 2rem;
-  margin-top: 1rem;
+  font-size: 1.5rem;
+  margin-top: 0.75rem;
 }
 
 .column-full.activities.flights-form {
@@ -473,11 +472,11 @@ select:hover {
 
 .flights-form select {
   width: 90%;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .flights-form .row {
-  margin-top: 0.5rem;
+  margin-top: 0.375rem;
 }
 
 .flights-form input {
@@ -488,8 +487,8 @@ select:hover {
   width: 30%;
   background-color: #597457;
   text-align: center;
-  padding: 0.5rem;
-  border-radius: 6px;
+  padding: 0.375rem;
+  border-radius: 4.5px;
   color: rgb(204, 204, 204);
-  font-size: 0.75rem;
+  font-size: 0.5625rem;
 }
